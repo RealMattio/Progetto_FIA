@@ -16,7 +16,7 @@ class DataPreprocessing:
 
         #self.df.fillna(self.df.mean(), inplace=True) sostituisco i valori mancanti con la media della colonna quindi con la media dei valori corrispondenti alla tipologia del dato mancante
 
-        self.df.dropna(inplace=True)
+        self.df.iloc[:,:-4].dropna(inplace=True)
 
         self.df.drop_duplicates(inplace=True) #rimuovo eventuali duplicati
 
