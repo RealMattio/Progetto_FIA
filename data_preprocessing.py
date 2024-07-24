@@ -80,11 +80,7 @@ class DataPreprocessing:
         # viene eliminata la colonna tipologia_servizio in quanto si parla di Teleassistenza per ogni prestazione
         ### data = self.df[['id_paziente', 'codice_regione_residenza', 'codice_asl_residenza', 'codice_provincia_residenza', 'codice_comune_residenza', 'tipologia_servizio', 'descrizione_attivita', 'codice_regione_erogazione', 'codice_asl_erogazione', 'codice_provincia_erogazione', 'codice_struttura_erogazione', 'codice_tipologia_struttura_erogazione', 'codice_tipologia_professionista_sanitario']]
         
-<<<<<<< HEAD
-        self.df = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta']]
-=======
         self.df = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta', 'fascia_eta']]
->>>>>>> main
 
         # le colonne rimanenti devono essere 'id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita',
         # 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario',
