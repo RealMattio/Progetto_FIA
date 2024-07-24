@@ -25,7 +25,7 @@ class DataPreprocessing:
 
         #Per comodità potrebbe essere utile introdurre la colonna età, ottenuta sottraendo la  data di nascita alla data e l'ora attuale
         #la funzione astype() converte il risultato in anni
-        self.df['eta'] = (pd.Timestamp('now') - self.df['data_nascita']).astype('<m8[Y]')
+        self.df['eta'] = self.df['data_nascita'].apply(self.calculate_age)
 
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
         #la funzione select_dtypes selezionerà tutte quante le colonne numeriche e le normalizzerà
