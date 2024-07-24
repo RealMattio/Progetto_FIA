@@ -31,7 +31,8 @@ class Pipeline:
         # ciclo per la selezione delle migliori features da utilizzare nel clustering
         
         # lista di liste dove ogni lista interna è l'elenco delle features da utilizzare in quell'iterazione
-        lista_di_features=[[],[],[]]
+        lista_di_features=[['regione_residenza'], ['asl_residenza'], ['codice_descrizione_attivita'], ['sesso'], ['tipologia_professionista_sanitario'], ['regione_erogazione'], ['asl_erogazione'], ['fasce_eta']]
+        # AGGIUNGERE FASCIA ETA'
 
         for features in tqdm(lista_di_features):
             data = dati[features]
