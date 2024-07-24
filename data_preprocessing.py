@@ -47,7 +47,13 @@ class DataPreprocessing:
         # Funzione per calcolare l'età
         self.df['eta'] = self.df['data_nascita'].apply(self.calculate_age)
         self.data['eta'] = self.data['data_nascita'].apply(self.calculate_age)
-        #print(self.df['eta'])
+        print(self.df['eta'])
+
+        # Creo la colonna 'fascia_età' basata sulla colonna 'eta'
+        bins = [0, 11, 22, 45, 65, float('inf')]
+        labels = ['0-11', '12-22', '23-45', '45-65', '66+']
+        self.df['fascia_eta'] = pd.cut(self.df['eta'], bins=bins, labels=labels, right=True)
+        print(self.df['fascia_eta'])
 
 
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
@@ -74,7 +80,11 @@ class DataPreprocessing:
         # viene eliminata la colonna tipologia_servizio in quanto si parla di Teleassistenza per ogni prestazione
         ### data = self.df[['id_paziente', 'codice_regione_residenza', 'codice_asl_residenza', 'codice_provincia_residenza', 'codice_comune_residenza', 'tipologia_servizio', 'descrizione_attivita', 'codice_regione_erogazione', 'codice_asl_erogazione', 'codice_provincia_erogazione', 'codice_struttura_erogazione', 'codice_tipologia_struttura_erogazione', 'codice_tipologia_professionista_sanitario']]
         
+<<<<<<< HEAD
         self.df = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta']]
+=======
+        self.df = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta', 'fascia_eta']]
+>>>>>>> main
 
         # le colonne rimanenti devono essere 'id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita',
         # 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario',
@@ -84,7 +94,7 @@ class DataPreprocessing:
         #tra tutte le colonne rimanenti si trattano come variabili categoriche tutte trann i campi data e ora e gli id
         self.df = pd.get_dummies(self.df, columns=['sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 
                                                'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 
-                                             'tipologia_professionista_sanitario'])
+                                             'tipologia_professionista_sanitario', 'fascia_eta'])
         return self.df
 
     #Funzione che richiama tutte le istanze delle funzioni precedentemente create
