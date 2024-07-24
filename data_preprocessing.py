@@ -40,6 +40,7 @@ class DataPreprocessing:
         self.df['data_nascita'] = pd.to_datetime(self.df['data_nascita'], errors='coerce')
         self.df['data_contatto'] = pd.to_datetime(self.df['data_contatto'], errors='coerce')
         self.df['data_erogazione'] = pd.to_datetime(self.df['data_erogazione'], errors='coerce')
+        self.df['data_erogazione'] = self.df['data_erogazione'].dt.date
         
         #Per comodità potrebbe essere utile introdurre la colonna età, ottenuta sottraendo la  data di nascita alla data e l'ora attuale
         #la funzione astype() converte il risultato in anni
