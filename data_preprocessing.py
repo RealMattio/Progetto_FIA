@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from datetime import datetime
 
 class DataPreprocessing:
     def __init__(self, df:pd.DataFrame):
@@ -22,16 +23,19 @@ class DataPreprocessing:
         self.df['data_nascita'] = pd.to_datetime(self.df['data_nascita'], errors='coerce')
         self.df['data_contatto'] = pd.to_datetime(self.df['data_contatto'], errors='coerce')
         self.df['data_erogazione'] = pd.to_datetime(self.df['data_erogazione'], errors='coerce')
-
+        
         #Per comodità potrebbe essere utile introdurre la colonna età, ottenuta sottraendo la  data di nascita alla data e l'ora attuale
         #la funzione astype() converte il risultato in anni
-        self.df['eta'] = (pd.Timestamp('now') - self.df['data_nascita']).astype('<m8[Y]')
+        # Funzione per calcolare l'età
+        self.df['eta'] = self.df['data_nascita'].apply(self.calculate_age)
+        print(self.df['eta'])
 
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
         #la funzione select_dtypes selezionerà tutte quante le colonne numeriche e le normalizzerà
         scaler = StandardScaler()
         numerical_features = self.df.select_dtypes(include=['float64', 'int64']).columns
         self.df[numerical_features] = scaler.fit_transform(self.df[numerical_features])
+        print(self.df['eta'])
 
         return self.df
     
@@ -69,6 +73,11 @@ class DataPreprocessing:
         df = self.transform_data()
         df = self.reduce_data()
         return self.df
+    
+    def calculate_age(self, birthdate):
+        today = datetime.today()
+        age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+        return age
 
 
 
