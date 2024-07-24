@@ -7,6 +7,7 @@ from datetime import datetime
 class DataPreprocessing:
     def __init__(self, df:pd.DataFrame):
         self.df = df
+        self.data = df
     #La funzione clean_data deve eseguire diverse operazioni di pulizia dei dati, in particolare deve:
     #1) Riempire i dati mancanti nel dataset
     #2) Rimuovere i duplicati
@@ -45,7 +46,8 @@ class DataPreprocessing:
 
         # Funzione per calcolare l'età
         self.df['eta'] = self.df['data_nascita'].apply(self.calculate_age)
-        print(self.df['eta'])
+        self.data['eta'] = self.data['data_nascita'].apply(self.calculate_age)
+        #print(self.df['eta'])
 
 
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
@@ -53,7 +55,7 @@ class DataPreprocessing:
         scaler = MinMaxScaler()
         numerical_features = self.df.select_dtypes(include=['float64', 'int64']).columns
         self.df[numerical_features] = scaler.fit_transform(self.df[numerical_features])
-        print(self.df['eta'])
+        #print(self.df['eta'])
 
         return self.df
     
@@ -72,7 +74,7 @@ class DataPreprocessing:
         # viene eliminata la colonna tipologia_servizio in quanto si parla di Teleassistenza per ogni prestazione
         ### data = self.df[['id_paziente', 'codice_regione_residenza', 'codice_asl_residenza', 'codice_provincia_residenza', 'codice_comune_residenza', 'tipologia_servizio', 'descrizione_attivita', 'codice_regione_erogazione', 'codice_asl_erogazione', 'codice_provincia_erogazione', 'codice_struttura_erogazione', 'codice_tipologia_struttura_erogazione', 'codice_tipologia_professionista_sanitario']]
         
-        data = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta']]
+        self.df = self.df[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta']]
 
         # le colonne rimanenti devono essere 'id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita',
         # 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario',
@@ -80,16 +82,16 @@ class DataPreprocessing:
 
 
         #tra tutte le colonne rimanenti si trattano come variabili categoriche tutte trann i campi data e ora e gli id
-        data = pd.get_dummies(data, columns=['sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 
+        self.df = pd.get_dummies(self.df, columns=['sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 
                                                'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 
                                              'tipologia_professionista_sanitario'])
-        return data
+        return self.df
 
     #Funzione che richiama tutte le istanze delle funzioni precedentemente create
     def preprocessing_data(self) -> pd.DataFrame:
-        df = self.clean_data()
-        df = self.transform_data()
-        df = self.reduce_data()
+        self.clean_data()
+        self.transform_data()
+        self.reduce_data()
         return self.df
     
     def calculate_age(self, birthdate):
