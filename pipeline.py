@@ -50,6 +50,7 @@ class Pipeline:
         print(f"Number of combinations: {len(features)}")
         
 
+        risultati = []
         for feature in tqdm(features):
             # selezioniamo le colonne del dataset il cui nome inizia con le feature scelte
             #print(f"Features: {feature}")
@@ -73,6 +74,9 @@ class Pipeline:
             # vogliamo in ingresso un dataframe e restituisce un dizionario con i risultati del clustering
             evaluation = ev.ClusteringEvaluation(1,2)
             results = evaluation.evaluate()
+            results['features'] = feature
+            risultati.append(results)
+
 
 
 
