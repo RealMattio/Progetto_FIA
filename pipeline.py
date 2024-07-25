@@ -58,7 +58,7 @@ class Pipeline:
             for f in feature:
                 data1 = dati[[col for col in dati.columns if col.startswith(f)]]
                 data = pd.concat([data, data1], axis=1)
-            print(data.head())
+            #print(data.head())
             # feature extraction: in questa fase si calcolano le features 'incremento' e 'incremento_teleassistenze'
             # vogliamo in ingresso un dataframe e in uscita verrà fornito lo stesso dataframe con le colonne 'incremento' e 'incremento_teleassistenze' aggiunte
             data = pd.concat([data, dati['data_erogazione']], axis=1)
@@ -67,12 +67,14 @@ class Pipeline:
 
             # clustering: in questa fase si esegue il clustering utilizzando le features appena selezionate
             # vogliamo in ingresso un dataframe e restituisce lo stesso dataframe con N (numero di tipologie di cluster) colonne in più, una per ogni tipologia di cluster
-            clustering = cl.Clustering(data,1)
+
+            # ATTENZIONE : quando viiene eseguito il clustering bisogna eliminare dal dataframe le colonne che non sono numeriche e rendere numeriche le colonne booleane
+            clustering = cl.Clustering(data,4)
             data = clustering.clustering()
 
             # valutazione: in questa fase si valuta il clustering ottenuto e si salvano i risultati ottenuti
             # vogliamo in ingresso un dataframe e restituisce un dizionario con i risultati del clustering
-            evaluation = ev.ClusteringEvaluation(1,2)
+            evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster')
             results = evaluation.evaluate()
             results['features'] = feature
             risultati.append(results)
