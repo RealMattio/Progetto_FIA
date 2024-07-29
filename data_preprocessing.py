@@ -40,7 +40,7 @@ class DataPreprocessing:
         self.df['data_nascita'] = pd.to_datetime(self.df['data_nascita'], errors='coerce')
         self.df['data_contatto'] = pd.to_datetime(self.df['data_contatto'], errors='coerce')
         self.df['data_erogazione'] = pd.to_datetime(self.df['data_erogazione'], errors='coerce')
-        self.df['data_erogazione'] = self.df['data_erogazione'].dt.date
+       
         
         #Per comodità potrebbe essere utile introdurre la colonna età, ottenuta sottraendo la  data di nascita alla data e l'ora attuale
         #la funzione astype() converte il risultato in anni
@@ -48,13 +48,13 @@ class DataPreprocessing:
         # Funzione per calcolare l'età
         self.df['eta'] = self.df['data_nascita'].apply(self.calculate_age)
         self.data['eta'] = self.data['data_nascita'].apply(self.calculate_age)
-        print(self.df['eta'])
+        #print(self.df['eta'])
 
         # Creo la colonna 'fascia_età' basata sulla colonna 'eta'
         bins = [0, 11, 22, 45, 65, float('inf')]
         labels = ['0-11', '12-22', '23-45', '45-65', '66+']
         self.df['fascia_eta'] = pd.cut(self.df['eta'], bins=bins, labels=labels, right=True)
-        print(self.df['fascia_eta'])
+        #print(self.df['fascia_eta'])
 
 
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
