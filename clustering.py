@@ -6,15 +6,20 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn.datasets import make_blobs
 from sklearn.mixture import GaussianMixture as GM
+from sklearn.cluster import AgglomerativeClustering
 
 
 class Clustering:
-    def __init__(self, data, k):
+    def __init__(self, data, n_cluster, dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10):
         self.data = data
-        self.k = k
+        self.n_cluster = n_cluster
+        self.dbscan_eps = dbscan_eps
+        self.dbscan_min_samples = dbscan_min_samples
+        self.GM_n_init = GM_n_init
     
     def clustering_kmeans(self) -> pd.DataFrame:
         X = self.data
+        '''
         wcss = []
         for i in range(1, 11):
             kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
@@ -25,10 +30,10 @@ class Clustering:
         plt.xlabel('Number of clusters')
         plt.ylabel('WCSS')
         plt.show()
-
-        kmeans = KMeans(n_clusters = 5, init = 'k-means++', random_state = 42)
+        '''
+        kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 42)
         y_kmeans = kmeans.fit_predict(X)
-
+        self.data['Cluster_Kmeans'] = y_kmeans
         '''
         plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
         plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
@@ -46,15 +51,17 @@ class Clustering:
     
     def clustering_hierarchical(self) -> pd.DataFrame:
         X = self.data
+        '''
         dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
         plt.title('Dendrogram')
         plt.xlabel('Customers')
         plt.ylabel('Euclidean distances')
         plt.show()
+        '''
 
-        from sklearn.cluster import AgglomerativeClustering
-        hc = AgglomerativeClustering(n_clusters = 5, affinity = 'euclidean', linkage = 'ward')
+        hc = AgglomerativeClustering(n_clusters = self.n_cluster, affinity = 'euclidean', linkage = 'ward')
         y_hc = hc.fit_predict(X)
+        self.data['Cluster_HC'] = y_hc
 
         '''
         plt.scatter(X[y_hc == 0, 0], X[y_hc == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
@@ -74,18 +81,22 @@ class Clustering:
     def clustering_dbscan(self) -> pd.DataFrame:
         data = self.data
 
+        '''
         # Plotto i dati
         plt.figure(figsize = [6, 6])
         plt.scatter(data['Coord_1'], data['Coord_2'])
         plt.xlabel('Coord_1', size = 20);
         plt.ylabel('Coord_2', size = 20);
-
+        '''
         # Instanzio ed addestro il DBSCAN
         # eps: The maximum distance between two samples for one to be considered as in the neighborhood of the other.
         # min_samples: The number of samples in a neighborhood for a point to be considered as a core point.
-        db = DBSCAN(eps = 3, min_samples = 3)
+        db = DBSCAN(eps = self.dbscan_eps, min_samples = self.dbscan_min_samples)
         db.fit(data)
+        y_db = db.fit_predict(data)
+        self.data['Cluster_DBSCAN'] = y_db
 
+        '''
         # Determino le etichette dei cluster più i punti isolati (-1)
         groups = np.unique(db.labels_)
         Nclusters = len(groups) - (1 if -1 in groups else 0)
@@ -94,7 +105,7 @@ class Clustering:
         colors = plt.cm.Wistia(np.linspace(0, 1, Nclusters))
         colors = np.concatenate([[[0, 0, 0, 1]], colors], axis = 0)
 
-        '''
+        
         # Plotto i dati
         plt.figure(figsize = [6, 6])
         cores_mask = np.zeros_like(db.labels_, dtype = bool)
@@ -114,21 +125,24 @@ class Clustering:
         plt.xlabel('Coord_1', size = 20);
         plt.ylabel('Coord_2', size = 20);
         '''
+        # NB: ricordati di gestire i punti isolati che sono quelli con etichetta -1 
         return self.data
     
     def clustering_expectationMaximisation(self) -> pd.DataFrame:
         X = self.data  # Utilizza il dataset definito nell'oggetto self
         
+        '''
         # Plotto i dati
         plt.figure(figsize = [6, 6])
         plt.scatter(X[:, 0], X[:, 1], cmap = 'brg')  # Assumi che self.data non abbia etichette
         plt.xlabel('x', size = 20)
         plt.ylabel('y', size = 20)
-
+        '''
         # Instanzio ed addestro l'EM
-        em = GM(n_components = 3, n_init = 10)
+        em = GM(n_components = self.n_cluster , n_init = self.GM_n_init)
         em.fit(X)
         clusters = em.predict(X)
+        self.data['Cluster_EM'] = clusters
 
         '''
         # Plotto i dati
