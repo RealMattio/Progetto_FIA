@@ -7,6 +7,8 @@ from sklearn.cluster import DBSCAN
 from sklearn.datasets import make_blobs
 from sklearn.mixture import GaussianMixture as GM
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.decomposition import PCA
+import math
 
 
 class Clustering:
@@ -16,9 +18,10 @@ class Clustering:
         self.dbscan_eps = dbscan_eps
         self.dbscan_min_samples = dbscan_min_samples
         self.GM_n_init = GM_n_init
+        self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze'])
     
     def clustering_kmeans(self) -> pd.DataFrame:
-        X = self.data
+        X = self.data_to_cluster
         '''
         wcss = []
         for i in range(1, 11):
@@ -31,7 +34,7 @@ class Clustering:
         plt.ylabel('WCSS')
         plt.show()
         '''
-        kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 42)
+        kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 40)
         y_kmeans = kmeans.fit_predict(X)
         self.data['Cluster_Kmeans'] = y_kmeans
         '''
@@ -50,7 +53,7 @@ class Clustering:
         return self.data
     
     def clustering_hierarchical(self) -> pd.DataFrame:
-        X = self.data
+        X = self.data_to_cluster
         '''
         dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
         plt.title('Dendrogram')
@@ -58,9 +61,16 @@ class Clustering:
         plt.ylabel('Euclidean distances')
         plt.show()
         '''
+        
+        n_components = math.ceil(len(X.columns)/4)
+        pca = PCA(n_components = n_components) 
+        df_reduced = pca.fit_transform(X)
+        print(f'Original: {X.shape}')
+        print(f'PCA: {df_reduced.shape}')
 
-        hc = AgglomerativeClustering(n_clusters = self.n_cluster, affinity = 'euclidean', linkage = 'ward')
-        y_hc = hc.fit_predict(X)
+
+        hc = AgglomerativeClustering(n_clusters = self.n_cluster, metric = 'euclidean', linkage = 'ward')
+        y_hc = hc.fit_predict(df_reduced)
         self.data['Cluster_HC'] = y_hc
 
         '''
@@ -79,7 +89,7 @@ class Clustering:
 
 
     def clustering_dbscan(self) -> pd.DataFrame:
-        data = self.data
+        data = self.data_to_cluster
 
         '''
         # Plotto i dati
@@ -92,7 +102,7 @@ class Clustering:
         # eps: The maximum distance between two samples for one to be considered as in the neighborhood of the other.
         # min_samples: The number of samples in a neighborhood for a point to be considered as a core point.
         db = DBSCAN(eps = self.dbscan_eps, min_samples = self.dbscan_min_samples)
-        db.fit(data)
+        #db.fit(data)
         y_db = db.fit_predict(data)
         self.data['Cluster_DBSCAN'] = y_db
 
@@ -128,8 +138,9 @@ class Clustering:
         # NB: ricordati di gestire i punti isolati che sono quelli con etichetta -1 
         return self.data
     
-    def clustering_expectationMaximisation(self) -> pd.DataFrame:
-        X = self.data  # Utilizza il dataset definito nell'oggetto self
+    def clustering_expectationMaximisation(self, GM_n_init = 2) -> pd.DataFrame:
+        X = self.data_to_cluster  # Utilizza il dataset definito nell'oggetto self
+        self.GM_n_init = GM_n_init
         
         '''
         # Plotto i dati
@@ -139,7 +150,7 @@ class Clustering:
         plt.ylabel('y', size = 20)
         '''
         # Instanzio ed addestro l'EM
-        em = GM(n_components = self.n_cluster , n_init = self.GM_n_init)
+        em = GM(n_components = self.n_cluster , n_init = self.GM_n_init, init_params='k-means++')
         em.fit(X)
         clusters = em.predict(X)
         self.data['Cluster_EM'] = clusters
