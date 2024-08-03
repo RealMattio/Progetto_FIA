@@ -39,7 +39,7 @@ class FeatureExtraction:
         self.incrementi['incremento'] = self.incrementi.groupby(['quadrimestre'])['numero_teleassistenze'].diff().fillna(0)
 
         # Discretizzo la variabile target 'incremento_teleassistenze'
-        bins = [-float('inf'), -10000, 0, 10000, float('inf')]
+        bins = [-float('inf'), -10000, 0, 18760, float('inf')]
         labels = ['Grande Decremento', 'Piccolo Decremento', 'Piccolo Incremento', 'Grande Incremento']
         self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incremento'], bins=bins, labels=labels)
         #print(self.incrementi)
