@@ -38,15 +38,10 @@ class FeatureExtraction:
         # Calcolo l'incremento tra i quadrimestri corrispondenti
         self.incrementi['incremento'] = self.incrementi.groupby(['quadrimestre'])['numero_teleassistenze'].diff().fillna(0)
 
-        self.incrementi['incrementi_periodici'] = self.incrementi['numero_teleassistenze'].diff().fillna(0)
-
         # Discretizzo la variabile target 'incremento_teleassistenze'
-        bins = [-float('inf'), -10000, 0, 18760, float('inf')]
-        #bins = [0, 2000, 5000, 10000, float('inf')]
+        bins = [-float('inf'), -10000, 0, 10000, float('inf')]
         labels = ['Grande Decremento', 'Piccolo Decremento', 'Piccolo Incremento', 'Grande Incremento']
-        #labels = ['COSTANT', 'LOW', 'MEDIUM', 'HIGH']
-        #self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incrementi_periodici'].abs(), bins=bins, labels=labels)
-        self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incremento'].abs(), bins=bins, labels=labels)
+        self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incremento'], bins=bins, labels=labels)
         #print(self.incrementi)
         
         # Assegno la label ad ogni elemento del dataframe principale
