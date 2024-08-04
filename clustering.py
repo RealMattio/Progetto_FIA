@@ -7,18 +7,25 @@ from sklearn.cluster import DBSCAN
 from sklearn.datasets import make_blobs
 from sklearn.mixture import GaussianMixture as GM
 from sklearn.cluster import AgglomerativeClustering
-
+from sklearn.decomposition import PCA
+import math
+from kmodes.kmodes import KModes
 
 class Clustering:
-    def __init__(self, data, n_cluster, dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10):
+    def __init__(self, data, n_cluster, dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10, data_categorical = None):
         self.data = data
         self.n_cluster = n_cluster
         self.dbscan_eps = dbscan_eps
         self.dbscan_min_samples = dbscan_min_samples
         self.GM_n_init = GM_n_init
+        #self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze'])
+        # se il clustering e' supervisionato allora usiamo anche la label per clusterizzare
+        self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre'])
+        self.data_to_cluster = pd.get_dummies(self.data_to_cluster, columns=['incremento_teleassistenze'])
+        self.data_categorical = data_categorical
     
     def clustering_kmeans(self) -> pd.DataFrame:
-        X = self.data
+        X = self.data_to_cluster
         '''
         wcss = []
         for i in range(1, 11):
@@ -31,7 +38,8 @@ class Clustering:
         plt.ylabel('WCSS')
         plt.show()
         '''
-        kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 42)
+        kmeans = KMeans(n_clusters = self.n_cluster, init = 'random', random_state = 42)
+        #kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 42)
         y_kmeans = kmeans.fit_predict(X)
         self.data['Cluster_Kmeans'] = y_kmeans
         '''
@@ -50,7 +58,7 @@ class Clustering:
         return self.data
     
     def clustering_hierarchical(self) -> pd.DataFrame:
-        X = self.data
+        X = self.data_to_cluster
         '''
         dendrogram = sch.dendrogram(sch.linkage(X, method = 'ward'))
         plt.title('Dendrogram')
@@ -58,9 +66,16 @@ class Clustering:
         plt.ylabel('Euclidean distances')
         plt.show()
         '''
+        
+        n_components = math.ceil(len(X.columns)/4)
+        pca = PCA(n_components = n_components) 
+        df_reduced = pca.fit_transform(X)
+        print(f'Original: {X.shape}')
+        print(f'PCA: {df_reduced.shape}')
 
-        hc = AgglomerativeClustering(n_clusters = self.n_cluster, affinity = 'euclidean', linkage = 'ward')
-        y_hc = hc.fit_predict(X)
+
+        hc = AgglomerativeClustering(n_clusters = self.n_cluster, metric = 'euclidean', linkage = 'ward')
+        y_hc = hc.fit_predict(df_reduced)
         self.data['Cluster_HC'] = y_hc
 
         '''
@@ -79,7 +94,7 @@ class Clustering:
 
 
     def clustering_dbscan(self) -> pd.DataFrame:
-        data = self.data
+        data = self.data_to_cluster
 
         '''
         # Plotto i dati
@@ -92,7 +107,7 @@ class Clustering:
         # eps: The maximum distance between two samples for one to be considered as in the neighborhood of the other.
         # min_samples: The number of samples in a neighborhood for a point to be considered as a core point.
         db = DBSCAN(eps = self.dbscan_eps, min_samples = self.dbscan_min_samples)
-        db.fit(data)
+        #db.fit(data)
         y_db = db.fit_predict(data)
         self.data['Cluster_DBSCAN'] = y_db
 
@@ -106,14 +121,14 @@ class Clustering:
         colors = np.concatenate([[[0, 0, 0, 1]], colors], axis = 0)
 
         
-        # Plotto i dati
+        # Plotto i dati
         plt.figure(figsize = [6, 6])
         cores_mask = np.zeros_like(db.labels_, dtype = bool)
         cores_mask[db.core_sample_indices_] = True
         for group, color in zip(groups, colors):
         group_mask = (db.labels_ == group)
 
-        # Plotto i punti cores
+        # Plotto i punti cores
         X = np.array(data.iloc[cores_mask & group_mask, :])
         plt.plot(X[:, 0], X[:, 1], 'o', markerfacecolor = color, markeredgecolor = 'k', markersize = 14)
 
@@ -128,8 +143,9 @@ class Clustering:
         # NB: ricordati di gestire i punti isolati che sono quelli con etichetta -1 
         return self.data
     
-    def clustering_expectationMaximisation(self) -> pd.DataFrame:
-        X = self.data  # Utilizza il dataset definito nell'oggetto self
+    def clustering_expectationMaximisation(self, GM_n_init = 2) -> pd.DataFrame:
+        X = self.data_to_cluster  # Utilizza il dataset definito nell'oggetto self
+        self.GM_n_init = GM_n_init
         
         '''
         # Plotto i dati
@@ -139,7 +155,7 @@ class Clustering:
         plt.ylabel('y', size = 20)
         '''
         # Instanzio ed addestro l'EM
-        em = GM(n_components = self.n_cluster , n_init = self.GM_n_init)
+        em = GM(n_components = self.n_cluster , n_init = self.GM_n_init, init_params='k-means++')
         em.fit(X)
         clusters = em.predict(X)
         self.data['Cluster_EM'] = clusters
@@ -162,3 +178,10 @@ class Clustering:
         CS = plt.contour(xx, yy, zz, levels = np.logspace(0, 1, 15))
         '''
         return self.data
+    
+    def clustering_kmodes(self) -> pd.DataFrame:
+        X = self.data_categorical
+        km = KModes(n_clusters = self.n_cluster, init='Huang', n_init=5, verbose=1)
+        clusters = km.fit_predict(X)
+
+        self.data_categorical['Cluster_Kmodes'] = clusters
