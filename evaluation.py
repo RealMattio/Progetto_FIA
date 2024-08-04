@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 from sklearn import metrics
-from sklearn.metrics import silhouette_samples#, silhouette_score
+from sklearn.metrics import silhouette_samples, silhouette_score
 from statistics import mean
+import time
 
 
 class ClusteringEvaluation:
@@ -50,19 +51,21 @@ class ClusteringEvaluation:
         #sulle righe ci sono le etichette vere, sulle colonne le etichette predette
         # shape = [n_classes_true, n_classes_pred] = [n_labels, n_clusters]
         
+        '''
         #per ogni colonna calcolo il massimo e sommo i massimi
         max_value = 0
         for i in range(contingency_matrix.shape[1]):
             max_value += max(contingency_matrix[:, i])
-        print(f'{max_value} / {len(y_true)}')
+        #print(f'{max_value} / {len(y_true)}')
         max_value = max_value / len(y_true)
-        
-
+        '''
 
         #print(contingency_matrix)
         # return purity
-        purity = np.sum(np.amax(contingency_matrix, axis=1)) / np.sum(contingency_matrix) # 0 = righe, 1 = colonne! NOI LA DOBBIAMO FARE PER COLONNE!
-        return max_value, contingency_matrix
+        # se sulle riche ci sono le label e sulle colonne i cluster allora il massimo deve essere calcolato lungo le colonne. In altre parole, fissato il cluster
+        # sulla colonna, scorro le righe in cerca del massimo. Perciò axis=1 
+        purity = np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) # 0 = righe, 1 = colonne! NOI LA DOBBIAMO FARE PER COLONNE!
+        return purity, contingency_matrix
     
     def calculate_silhouette(self) -> pd.DataFrame:
         '''
@@ -103,3 +106,13 @@ class ClusteringEvaluation:
         '''
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
         return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix}
+
+    def eval2(self) -> dict:
+        
+        self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
+        features_array = self.data_to_compute.values
+        start_silhouette = time.time()
+        silhouette_vals = silhouette_score(features_array, self.predictions)
+        end_silhouette = time.time()
+
+        return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix, "silhouette": silhouette_vals, "time_silhouette": end_silhouette - start_silhouette}
