@@ -32,7 +32,80 @@ class Pipeline:
     def load_data(self) -> pd.DataFrame:
         return pd.read_csv(self.path)
     
+    def run(self):
+        print(f"Running pipeline from data in {self.path}")
+        print("Reading file")
+        data_preprocessing = dp.DataPreprocessing(self.data)
+        print("Data preprocessing")
+        data = data_preprocessing.clean_data()
+        data = data_preprocessing.transform_data()
+        dati = data[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta', 'fascia_eta']]
+        dati_dummy = data_preprocessing.reduce_data()
+        lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
+        features = all_combinations(lista_di_features)
+        #features = features.remove(('sesso',))
+        # Convertiamo le tuple in liste per una visualizzazione più chiara
+        features = [list(comb) for comb in features]
+        print(f"Number of combinations: {len(features)}")
 
+        feature_extractor = fe.FeatureExtraction(dati)
+        dati = feature_extractor.extract()
+        feature_extractor2 = fe.FeatureExtraction(dati_dummy)
+        dati_dummy = feature_extractor2.extract()
+        
+        
+        #escludo il primo quadrimestre del 2019
+        dati = dati[~((dati['anno'] == 2019) & (dati['quadrimestre'] == 1))]
+        dati_dummy = dati_dummy[~((dati_dummy['anno'] == 2019) & (dati_dummy['quadrimestre'] == 1))]
+
+        print(dati.columns)
+        columns_with_nan = dati.columns[dati.isnull().any()].tolist()
+        print(columns_with_nan)
+        dati = dati.drop(columns=columns_with_nan)
+        #print(dati_dummy)
+
+        risultati = []
+        for n in tqdm(range(2,6)):
+            clustering = cl.Clustering(dati_dummy, n_cluster = n, data_categorical = dati)
+
+            if self.clustering_type == 'kmeans':
+                clustering.clustering_kmeans()
+                data_clustered = clustering.data
+            elif self.clustering_type == 'hierarchical':
+                clustering.clustering_hierarchical()
+                data_clustered = clustering.data
+            elif self.clustering_type == 'dbscan':
+                clustering.clustering_dbscan()
+                data_clustered = clustering.data
+            elif self.clustering_type == 'expectationMaximisation':
+                clustering.clustering_expectationMaximisation()
+                data_clustered = clustering.data
+            elif self.clustering_type == 'kmodes':
+                clustering.clustering_kmodes()
+                data_clustered = clustering.data_categorical
+
+            evaluation = ev.ClusteringEvaluation(data_clustered, 'incremento_teleassistenze', 'Cluster_Kmodes')
+            #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
+            results = evaluation.eval()
+            #results['features'] = feature
+            results['n_cluster'] = n
+
+            label_counts = data_clustered['Cluster_Kmodes'].value_counts()
+            results['cluster counts'] = label_counts
+            label_counts = data_clustered['incremento_teleassistenze'].value_counts()
+            results['label counts'] = label_counts
+
+            risultati.append(results)
+        
+        #salvo i dati in un csv
+        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_json('test_results/test_results_Kmodes_old_labels.json')
+
+
+
+
+
+    
+    '''
     # Metodo che esegue la pipeline
     def run(self):
         print(f"Running pipeline from data in {self.path}")
@@ -77,13 +150,13 @@ class Pipeline:
             # feature extraction: in questa fase si calcolano le features 'incremento' e 'incremento_teleassistenze'
             # vogliamo in ingresso un dataframe e in uscita verrà fornito lo stesso dataframe con le colonne 'incremento' e 'incremento_teleassistenze' aggiunte
             data = pd.concat([data, dati[['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze']]], axis=1)
-            '''
+            #''
             feature_extractor = fe.FeatureExtraction(data)
             data = feature_extractor.extract()
             print(data.shape)
             data = data[data['anno'] != 2019]
             print(data.shape)
-            '''
+            ''
             # clustering: in questa fase si esegue il clustering utilizzando le features appena selezionate
             # vogliamo in ingresso un dataframe e restituisce lo stesso dataframe con N (numero di tipologie di cluster) colonne in più, una per ogni tipologia di cluster
 
@@ -102,13 +175,13 @@ class Pipeline:
             #clustering.clustering_expectationMaximisation()
 
 
-            '''
+            ''
             time_em_start = time.time()
             clustering.clustering_expectationMaximisation()
             time_em_end = time.time()
             time_em = time_em_end - time_em_start
             print(f"Time Clustering Expectation Maximisation: {time_em}")
-            '''
+            ''
             data = clustering.data
 
             #label_counts = data['Cluster_HC'].value_counts()
@@ -135,16 +208,16 @@ class Pipeline:
             results['label counts'] = label_counts
 
             risultati.append(results)
-            '''
+            ''
             results = evaluation.evaluate()
             results['features'] = feature
             risultati.append(results[1])
-            '''
+            ''
         
         #salvo i dati in un csv
         pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv('test_results/test_results6.json')
 
-
+    '''
 
 
 

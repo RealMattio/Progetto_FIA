@@ -121,14 +121,14 @@ class Clustering:
         colors = np.concatenate([[[0, 0, 0, 1]], colors], axis = 0)
 
         
-        # Plotto i dati
+        # Plotto i dati
         plt.figure(figsize = [6, 6])
         cores_mask = np.zeros_like(db.labels_, dtype = bool)
         cores_mask[db.core_sample_indices_] = True
         for group, color in zip(groups, colors):
         group_mask = (db.labels_ == group)
 
-        # Plotto i punti cores
+        # Plotto i punti cores
         X = np.array(data.iloc[cores_mask & group_mask, :])
         plt.plot(X[:, 0], X[:, 1], 'o', markerfacecolor = color, markeredgecolor = 'k', markersize = 14)
 
@@ -181,7 +181,7 @@ class Clustering:
     
     def clustering_kmodes(self) -> pd.DataFrame:
         X = self.data_categorical
-        km = KModes(n_clusters=4, init='Huang', n_init=5, verbose=1)
+        km = KModes(n_clusters = self.n_cluster, init='Huang', n_init=5, verbose=1)
         clusters = km.fit_predict(X)
 
-        self.data['Cluster_Kmodes'] = clusters
+        self.data_categorical['Cluster_Kmodes'] = clusters
