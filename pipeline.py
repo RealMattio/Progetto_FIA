@@ -22,9 +22,10 @@ def all_combinations(input_list):
 class Pipeline:
 
     # Costruttore della classe che si occuperà di eseguire tutti i passaggi del pipeline
-    def __init__(self, path ='data/challenge_campus_biomedico_2024_sample.csv'):
+    def __init__(self, path ='data/challenge_campus_biomedico_2024_sample.csv', clustering_type = 'kmeans'):
         self.path = path
         self.data = self.load_data()
+        self.clustering_type = clustering_type
 
 
     #funzione per legge il dataset
@@ -43,12 +44,14 @@ class Pipeline:
         # ciclo per la selezione delle migliori features da utilizzare nel clustering
     
         #lista_di_features=['fascia_eta']
-        lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'fascia_eta']
-        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
+        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'fascia_eta']
+        #lista_di_features=['asl_erogazione', 'fascia_eta']
+        lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
         #lista_di_features=['regione_residenza', 'asl_residenza', 'codice_descrizione_attivita', 'sesso', 'tipologia_professionista_sanitario', 'regione_erogazione', 'asl_erogazione', 'fascia_eta']
         
         # lista di liste dove ogni lista interna è l'elenco delle features da utilizzare in quell'iterazione
         features = all_combinations(lista_di_features)
+        #features = features.remove(('sesso',))
         # Convertiamo le tuple in liste per una visualizzazione più chiara
         features = [list(comb) for comb in features]
         print(f"Number of combinations: {len(features)}")
@@ -56,10 +59,13 @@ class Pipeline:
         feature_extractor = fe.FeatureExtraction(dati)
         dati = feature_extractor.extract()
         #print(dati.columns)
-        dati = dati[dati['anno'] != 2019]
-        print(dati.shape)
+        #dati = dati[dati['anno'] != 2019]
+        #escludo il primo quadrimestre del 2019
+        dati = dati[~((dati['anno'] == 2019) & (dati['quadrimestre'] == 1))]
+
 
         risultati = []
+        #features=[['asl_erogazione', 'fascia_eta']]
         for feature in tqdm(features):
             # selezioniamo le colonne del dataset il cui nome inizia con le feature scelte
             #print(f"Features: {feature}")
@@ -82,58 +88,61 @@ class Pipeline:
             # vogliamo in ingresso un dataframe e restituisce lo stesso dataframe con N (numero di tipologie di cluster) colonne in più, una per ogni tipologia di cluster
 
             # ATTENZIONE : quando viiene eseguito il clustering bisogna eliminare dal dataframe le colonne che non sono numeriche e rendere numeriche le colonne booleane
-            for n in tqdm(range(2, 10)):
-                clustering = cl.Clustering(data, n_cluster = n)
-                
-                clustering.clustering_kmeans()
+            n = 4
+            #for n in tqdm(range(2, 10)):
+            clustering = cl.Clustering(data, n_cluster = n)
             
-                #print(f"Time Clustering KMeans: {time_k_means}")
-                #clustering.clustering_hierarchical()
-                #print(f"Clustering Hierarchical: {clustering.data['Cluster_HC'].unique()}")
-                #clustering.clustering_dbscan()
-                #print(f"Clustering DBSCAN: {clustering.data['Cluster_DBSCAN'].unique()}")
-                #clustering.clustering_expectationMaximisation()
+            clustering.clustering_kmeans()
+        
+            #print(f"Time Clustering KMeans: {time_k_means}")
+            #clustering.clustering_hierarchical()
+            #print(f"Clustering Hierarchical: {clustering.data['Cluster_HC'].unique()}")
+            #clustering.clustering_dbscan()
+            #print(f"Clustering DBSCAN: {clustering.data['Cluster_DBSCAN'].unique()}")
+            #clustering.clustering_expectationMaximisation()
 
 
-                '''
-                time_em_start = time.time()
-                clustering.clustering_expectationMaximisation()
-                time_em_end = time.time()
-                time_em = time_em_end - time_em_start
-                print(f"Time Clustering Expectation Maximisation: {time_em}")
-                '''
-                data = clustering.data
+            '''
+            time_em_start = time.time()
+            clustering.clustering_expectationMaximisation()
+            time_em_end = time.time()
+            time_em = time_em_end - time_em_start
+            print(f"Time Clustering Expectation Maximisation: {time_em}")
+            '''
+            data = clustering.data
 
-                label_counts = data['Cluster_Kmeans'].value_counts()
-                #label_counts = data['Cluster_HC'].value_counts()
-                #label_counts = data['Cluster_DBSCAN'].value_counts()
-                #label_counts = data['Cluster_EM'].value_counts()
-                
+            #label_counts = data['Cluster_HC'].value_counts()
+            #label_counts = data['Cluster_DBSCAN'].value_counts()
+            #label_counts = data['Cluster_EM'].value_counts()
+            #print("\nNumero di elementi per ogni cluster:")
+            #print(label_counts)
 
-                print("\nNumero di elementi per ogni cluster:")
-                print(label_counts)
-
-                label_counts = data['incremento_teleassistenze'].value_counts()
-                print("\nNumero di elementi per ogni incremento:")
-                print(label_counts)
+            #print("\nNumero di elementi per ogni incremento:")
+            #print(label_counts)
 
 
-                # valutazione: in questa fase si valuta il clustering ottenuto e si salvano i risultati ottenuti
-                # vogliamo in ingresso un dataframe e restituisce un dizionario con i risultati del clustering
-                evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_Kmeans')
-                #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
-                results = evaluation.eval()
-                results['features'] = feature
-                results['n_cluster'] = n
-                risultati.append(results)
-                '''
-                results = evaluation.evaluate()
-                results['features'] = feature
-                risultati.append(results[1])
-                '''
-            
+            # valutazione: in questa fase si valuta il clustering ottenuto e si salvano i risultati ottenuti
+            # vogliamo in ingresso un dataframe e restituisce un dizionario con i risultati del clustering
+            evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_Kmeans')
+            #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
+            results = evaluation.eval()
+            results['features'] = feature
+            results['n_cluster'] = n
+
+            label_counts = data['Cluster_Kmeans'].value_counts()
+            results['cluster counts'] = label_counts
+            label_counts = data['incremento_teleassistenze'].value_counts()
+            results['label counts'] = label_counts
+
+            risultati.append(results)
+            '''
+            results = evaluation.evaluate()
+            results['features'] = feature
+            risultati.append(results[1])
+            '''
+        
         #salvo i dati in un csv
-        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv('test_results/test_results5.json')
+        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv('test_results/test_results6.json')
 
 
 

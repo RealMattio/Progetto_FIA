@@ -9,16 +9,20 @@ from sklearn.mixture import GaussianMixture as GM
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.decomposition import PCA
 import math
-
+from kmodes.kmodes import KModes
 
 class Clustering:
-    def __init__(self, data, n_cluster, dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10):
+    def __init__(self, data, n_cluster, dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10, data_categorical = None):
         self.data = data
         self.n_cluster = n_cluster
         self.dbscan_eps = dbscan_eps
         self.dbscan_min_samples = dbscan_min_samples
         self.GM_n_init = GM_n_init
-        self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze'])
+        #self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze'])
+        # se il clustering e' supervisionato allora usiamo anche la label per clusterizzare
+        self.data_to_cluster = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre'])
+        self.data_to_cluster = pd.get_dummies(self.data_to_cluster, columns=['incremento_teleassistenze'])
+        self.data_categorical = data_categorical
     
     def clustering_kmeans(self) -> pd.DataFrame:
         X = self.data_to_cluster
@@ -34,7 +38,8 @@ class Clustering:
         plt.ylabel('WCSS')
         plt.show()
         '''
-        kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 40)
+        kmeans = KMeans(n_clusters = self.n_cluster, init = 'random', random_state = 42)
+        #kmeans = KMeans(n_clusters = self.n_cluster, init = 'k-means++', random_state = 42)
         y_kmeans = kmeans.fit_predict(X)
         self.data['Cluster_Kmeans'] = y_kmeans
         '''
@@ -173,3 +178,10 @@ class Clustering:
         CS = plt.contour(xx, yy, zz, levels = np.logspace(0, 1, 15))
         '''
         return self.data
+    
+    def clustering_kmodes(self) -> pd.DataFrame:
+        X = self.data_categorical
+        km = KModes(n_clusters=4, init='Huang', n_init=5, verbose=1)
+        clusters = km.fit_predict(X)
+
+        self.data['Cluster_Kmodes'] = clusters
