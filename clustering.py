@@ -181,7 +181,7 @@ class Clustering:
     
     def clustering_kmodes(self) -> pd.DataFrame:
         X = self.data_categorical
-        km = KModes(n_clusters = self.n_cluster, init='Huang', n_init=5, verbose=1)
+        km = KModes(n_clusters = self.n_cluster, init='Huang', n_init=4, verbose=1)
         clusters = km.fit_predict(X)
 
         self.data_categorical['Cluster_Kmodes'] = clusters

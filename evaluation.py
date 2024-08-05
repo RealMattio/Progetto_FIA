@@ -23,7 +23,7 @@ class ClusteringEvaluation:
         self.silhouette_mean = None
         self.silhouette_std = None
         self.final_metric = None
-        self.data_to_compute = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze', self.predictions_name])
+        #self.data_to_compute = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze', self.predictions_name])
 
         
     
