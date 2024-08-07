@@ -7,6 +7,7 @@ import evaluation as ev
 import itertools
 from tqdm import tqdm
 import time
+import prince
 
     # Funzione per ottenere tutte le combinazioni degli elementi di una lista
 def all_combinations(input_list):
@@ -38,8 +39,8 @@ class Pipeline:
         data_preprocessing = dp.DataPreprocessing(self.data)
         print("Data preprocessing")
         data = data_preprocessing.clean_data()
-        columns_with_nan = data.columns[data.isnull().any()].tolist()
-        print(columns_with_nan)
+        #columns_with_nan = data.columns[data.isnull().any()].tolist()
+        #print(columns_with_nan)
 
         data = data_preprocessing.transform_data()
         dati = data[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta', 'fascia_eta']]
@@ -57,10 +58,11 @@ class Pipeline:
         feature_extractor = fe.FeatureExtraction(dati)
         dati = feature_extractor.extract()
         label_counts = dati['incremento_teleassistenze'].value_counts()
-        print(f"\nNumero di elementi per ogni incremento: {label_counts}")
+        #print(f"\nNumero di elementi per ogni incremento: {label_counts}")
 
         feature_extractor2 = fe.FeatureExtraction(dati_dummy)
         dati_dummy = feature_extractor2.extract()
+        
         
         
         #escludo il primo quadrimestre del 2019 (Va fatto se uso l-incrmemento sequenziale)
@@ -77,7 +79,14 @@ class Pipeline:
 
         dati = dati.drop(columns=columns_with_nan)
         #print(dati_dummy)
-
+        '''
+        mca = prince.MCA(n_components=3)
+        dati_da_fittare = dati.loc[:, lista_di_features]
+        print(dati_da_fittare.columns)
+        mca = mca.fit(dati_da_fittare)
+        nuovi_dati = mca.transform(dati_da_fittare)
+        print(nuovi_dati.head())
+        '''
         risultati = []
         n = self.n_cluster
         feature=['tutte']
@@ -89,6 +98,7 @@ class Pipeline:
             print(data)
             
             clustering = cl.Clustering(dati_dummy, n_cluster = n, data_categorical = data)
+            #clustering = cl.Clustering(nuovi_dati, n_cluster = n, data_categorical = data)
 
             if self.clustering_type == 'kmeans':
                 clustering.clustering_kmeans()
