@@ -105,7 +105,7 @@ class ClusteringEvaluation:
         :return: Dizionario con i valori di purezza, silhouette media e deviazione standard
         '''
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
-        return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix}
+        return {"purity": self.purity.item(), "contingency_matrix": str(self.contingency_matrix)}
 
     def eval2(self) -> dict:
         
