@@ -164,6 +164,7 @@ cython_debug/
 
 challenge_campus_biomedico.pdf
 prova.py
+prova2.py
 prova.ipynb
 data/challenge_campus_biomedico_2024.parquet
 data/challenge_campus_biomedico_2024.csv
