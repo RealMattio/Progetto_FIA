@@ -1,39 +1,50 @@
 import pandas as pd
 from datetime import datetime as dt
+
+
 class FeatureExtraction:
 
     def __init__(self, df:pd.DataFrame):
+        '''
+        costruttore della classe FeatureExtraction
+        :param df: dataframe contenente i dati
+        '''
         self.df = df
+        self.incrementi = None
+
+    def assign_label(self):
+        '''
+        Assegna la label 'incremento_teleassistenze' ad ogni elemento del dataframe principale in base al fatto che l'istanza
+        appartenga o meno a quel quadrimestre
+        '''
+        for index, row in self.incrementi.iterrows():
+            self.df.loc[(self.df['anno'] == row['anno']) & (self.df['quadrimestre'] == row['quadrimestre']), 'incremento_teleassistenze'] = row['incremento_teleassistenze']
 
     def extract(self) -> pd.DataFrame:
+        # Estraggo l'anno e il quadrimestre dalla data di erogazione
+        self.df['anno'] = self.df['data_erogazione'].dt.year
+        #print(self.df)
+
+        # Estraggo il mese dalla colonna di date, producendo un numero intero tra 1 e 12.
+        # riduco il valore del mese di 1. Questo perché i mesi sono numerati da 1 a 12, ma per il calcolo del quadrimestre è più conveniente lavorare con un indice che parte da 0.
+        # divido il valore ottenuto per 4 così da dividere l'anno in quadrimestri
+        #+ 1 converte l'indice zero-based ottenuto dalla divisione in un quadrimestre 1-based. 
         
-        # Controllo iniziale dei dati
-        #print("Tipo di dato della colonna 'data_erogazione':", self.df['data_erogazione'].dtype)
-        #print("Valori NaT nella colonna 'data_erogazione':", self.df['data_erogazione'].isna().sum())
+        self.df['quadrimestre'] = ((self.df['data_erogazione'].dt.month - 1) // 4) + 1
 
-        # Conversione in datetime
-        self.df['data_erogazione'] = pd.to_datetime(self.df['data_erogazione'], errors='coerce')
+        # Raggruppo i dati per anno e quadrimestre e conto il numero di teleassistenze
+        self.incrementi = self.df.groupby(['anno', 'quadrimestre']).size().reset_index(name='numero_teleassistenze')
+        
+        # Calcolo l'incremento tra i quadrimestri corrispondenti
+        self.incrementi['incremento'] = self.incrementi.groupby(['quadrimestre'])['numero_teleassistenze'].diff().fillna(0)
 
-        # Verifica se la conversione è avvenuta correttamente
-        if pd.api.types.is_datetime64_any_dtype(self.df['data_erogazione']):
-            self.df['anno'] = self.df['data_erogazione'].dt.year
-            self.df['quadrimestre'] = ((self.df['data_erogazione'].dt.month - 1) // 4) + 1
-            print(self.df)
-            #self.data = self.df
-            # Raggruppo i dati per anno e quadrimestre e conto il numero di teleassistenze
-            self.counts = self.df.groupby(['anno', 'quadrimestre']).size().reset_index(name='numero_teleassistenze')
-
-            # Calcolo l'incremento tra i quadrimestri corrispondenti
-            self.counts['incremento'] = self.counts.groupby(['anno'])['numero_teleassistenze'].diff().fillna(0)
-            print(self.df)
-
-            # Discretizzo la variabile target 'incremento_teleassistenze'
-            bins = [-float('inf'), 0, 10, 50, float('inf')]
-            labels = ['Costant', 'Low', 'Medium', 'High']
-            self.counts['incremento_teleassistenze'] = pd.cut(self.counts['incremento'], bins=bins, labels=labels)
-
-            self.df = self.df.merge(self.counts, on=['anno', 'quadrimestre'], how='left')
-        else:
-            print("Errore: la colonna 'data_erogazione' non è di tipo datetime.")
-
+        # Discretizzo la variabile target 'incremento_teleassistenze'
+        bins = [-float('inf'), -10000, 0, 10000, float('inf')]
+        labels = ['Grande Decremento', 'Piccolo Decremento', 'Piccolo Incremento', 'Grande Incremento']
+        self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incremento'], bins=bins, labels=labels)
+        #print(self.incrementi)
+        
+        # Assegno la label ad ogni elemento del dataframe principale
+        self.assign_label()
+        #print(self.df)
         return self.df
