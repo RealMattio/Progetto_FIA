@@ -7,7 +7,7 @@ import time
 
 
 class ClusteringEvaluation:
-    def __init__(self, data:pd.DataFrame, labels_name:str, predictions_name:str):
+    def __init__(self, data:pd.DataFrame, labels_name:str, predictions_name:str, dati_binari):
         '''
         :param data: DataFrame contenente i dati
         :param labels_col: Nome della colonna contenente le etichette vere
@@ -24,9 +24,9 @@ class ClusteringEvaluation:
         self.silhouette_std = None
         self.final_metric = None
         #self.data_to_compute = data.drop(columns=['data_erogazione', 'anno', 'quadrimestre', 'incremento_teleassistenze', self.predictions_name])
-
+        self.dati_binari = dati_binari
         
-    
+    '''
     def calculate_purity(true_labels, predicted_labels):
         # Creiamo una tabella di contingenza
         contingency_matrix = pd.crosstab(true_labels, predicted_labels)
@@ -37,7 +37,7 @@ class ClusteringEvaluation:
         # La purezza è la somma di questi massimi valori divisa per il numero totale di punti
         purity = np.sum(max_values) / np.sum(contingency_matrix.values)
         return purity
-    
+    '''
 
     def purity_score(self, y_true, y_pred) -> float:
         '''
@@ -51,27 +51,19 @@ class ClusteringEvaluation:
         #sulle righe ci sono le etichette vere, sulle colonne le etichette predette
         # shape = [n_classes_true, n_classes_pred] = [n_labels, n_clusters]
         
-        '''
-        #per ogni colonna calcolo il massimo e sommo i massimi
-        max_value = 0
-        for i in range(contingency_matrix.shape[1]):
-            max_value += max(contingency_matrix[:, i])
-        #print(f'{max_value} / {len(y_true)}')
-        max_value = max_value / len(y_true)
-        '''
-
         #print(contingency_matrix)
         # return purity
         # se sulle riche ci sono le label e sulle colonne i cluster allora il massimo deve essere calcolato lungo le colonne. In altre parole, fissato il cluster
-        # sulla colonna, scorro le righe in cerca del massimo. Perciò axis=1 
-        purity = np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) # 0 = righe, 1 = colonne! NOI LA DOBBIAMO FARE PER COLONNE!
+        # sulla colonna, scorro le righe in cerca del massimo. Perciò axis=0
+        purity = np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) # 0 = scorre le righe fissando le colonne, 1 = viceversa! NOI LA DOBBIAMO FISSARE LE COLONNE!
         return purity, contingency_matrix
     
+    '''
     def calculate_silhouette(self) -> pd.DataFrame:
-        '''
+        ''
         Calcola i valori di silhouette per ogni punto
         :return: DataFrame con i valori di silhouette per ogni punto aggiunti al dataframe originale
-        '''
+        ''
         # Creiamo un array con i dati
         features_array = self.data_to_compute.values
         silhouette_vals = silhouette_samples(features_array, self.predictions)
@@ -81,11 +73,11 @@ class ClusteringEvaluation:
     
     
     def evaluate(self) -> tuple:
-        '''
+        ''
         Valuta la bontà del clustering
         :return: tupla che contiene come primo elemento il DataFrame al quale sono stati aggiunti i valori di 
         silhouette per ogni punto e come secondo elemento un dizionario con i valori di purezza, silhouette media e deviazione standard
-        '''
+        ''
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
         self.purity = self.purity.item()
         #self.purity = purity_score(self.labels, self.predictions)
@@ -98,7 +90,7 @@ class ClusteringEvaluation:
 
         self.final_metric = mean([self.purity, self.silhouette_mean]) - 0.05*N
         return self.data, {"purity": self.purity, "silhouette_mean": self.silhouette_mean, "silhouette_std": self.silhouette_std, "final_metric": self.final_metric}
-    
+    '''
     def eval(self) -> dict:
         '''
         Valuta la bontà del clustering
@@ -110,8 +102,10 @@ class ClusteringEvaluation:
     def eval2(self) -> dict:
         
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
-        features_array = self.data_to_compute.values
+        features_array = self.dati_binari
         start_silhouette = time.time()
+        # il primo parametro è il dataframe con tutti i valori (nel nostro caso binari) dei punti
+        # il secondo parametro è il vettore con le etichette predette
         silhouette_vals = silhouette_score(features_array, self.predictions)
         end_silhouette = time.time()
 

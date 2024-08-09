@@ -8,6 +8,8 @@ import itertools
 from tqdm import tqdm
 import time
 import prince
+from sklearn.preprocessing import OneHotEncoder
+
 
     # Funzione per ottenere tutte le combinazioni degli elementi di una lista
 def all_combinations(input_list):
@@ -68,7 +70,7 @@ class Pipeline:
         #escludo il primo quadrimestre del 2019 (Va fatto se uso l-incrmemento sequenziale)
         #dati = dati[~((dati['anno'] == 2019) & (dati['quadrimestre'] == 1))]
         #dati_dummy = dati_dummy[~((dati_dummy['anno'] == 2019) & (dati_dummy['quadrimestre'] == 1))]
-
+        
         #escludo il 2019 (se calcolo incrememnto quadrimestre per quadrimestre)
         dati = dati[~(dati['anno'] == 2019)]
         dati_dummy = dati_dummy[~(dati_dummy['anno'] == 2019)]
@@ -90,10 +92,11 @@ class Pipeline:
         risultati = []
         n = self.n_cluster
         feature=['tutte']
+        features=[["codice_descrizione_attivita","incremento_teleassistenze"]]
         for feature in tqdm(features):
         #for n in tqdm(range(2,6)):
             # seleziono solo le colonne presenti in feature
-            feature.append('incremento_teleassistenze')
+            #feature.append('incremento_teleassistenze')
             data = dati[feature]
             print(data)
             
@@ -115,10 +118,17 @@ class Pipeline:
             elif self.clustering_type == 'kmodes':
                 clustering.clustering_kmodes()
                 data_clustered = clustering.data_categorical
+            
+            # EDO LAVORA QUA
+            # effettuare encoding con OneHot 
+            encoder = OneHotEncoder(sparse_output=False)
+            encoded_data = encoder.fit_transform(data_clustered)
+            # poi passi a ClusteringEvaluation i dati binari
+            print(encoded_data)
 
-            evaluation = ev.ClusteringEvaluation(data_clustered, 'incremento_teleassistenze', 'Cluster_Kmodes')
+            evaluation = ev.ClusteringEvaluation(data_clustered, 'incremento_teleassistenze', 'Cluster_Kmodes', encoded_data)
             #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
-            results = evaluation.eval()
+            results = evaluation.eval2()
             results['features'] = feature
             results['n_cluster'] = n
 
@@ -130,7 +140,7 @@ class Pipeline:
             risultati.append(results)
         
         #salvo i dati in un csv
-        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_json('test_results/test_results_Kmodes_old_labels_Huang_scelta_features.json')
+        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_json('test_results/test_results_Kmodes_old_labels_Huang_scelta_features_trimestri.json')
 
 
 
