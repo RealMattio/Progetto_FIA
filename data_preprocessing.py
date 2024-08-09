@@ -62,8 +62,9 @@ class DataPreprocessing:
         #utilizziamo il modulo StandardScaler per normalizzare il dataset. l'obiettivo è quello di riscalare i dati, riportarli quindi alla stessa scala.
         #la funzione select_dtypes selezionerà tutte quante le colonne numeriche e le normalizzerà
         scaler = MinMaxScaler()
-        numerical_features = self.df.select_dtypes(include=['float64', 'int64']).columns
-        self.df[numerical_features] = scaler.fit_transform(self.df[numerical_features])
+        #numerical_features = self.df.select_dtypes(include=['float64', 'int64']).columns
+        #self.df[numerical_features] = scaler.fit_transform(self.df[numerical_features])
+        self.df['eta'] = scaler.fit_transform(self.df[['eta']])
         #print(self.df['eta'])
 
         return self.df
