@@ -126,6 +126,11 @@ class Pipeline:
             # poi passi a ClusteringEvaluation i dati binari
             print(encoded_data)
 
+            self.clustering_type == 'PCA'
+            clustering.clustering_PCA()
+            data_clustered = clustering.data_categorical
+            
+
             evaluation = ev.ClusteringEvaluation(data_clustered, 'incremento_teleassistenze', 'Cluster_Kmodes', encoded_data)
             #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
             results = evaluation.eval2()

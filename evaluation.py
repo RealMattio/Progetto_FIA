@@ -98,6 +98,17 @@ class ClusteringEvaluation:
         '''
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
         return {"purity": self.purity.item(), "contingency_matrix": str(self.contingency_matrix)}
+    
+    def calcolo_metrica_finale(self, purity, silhouette_mean, n_clusters):
+        '''
+        Calcola la metrica finale combinando purezza, silhouette mean e un termine di penalità.
+        1)param purity: Purezza del clustering
+        2)param silhouette_mean: Punteggio medio di silhouette
+        3)param n_clusters: Numero di cluster
+        '''
+        penalty = 0.05 * n_clusters
+        final_metric = mean([purity, silhouette_mean]) - penalty
+        return final_metric
 
     def eval2(self) -> dict:
         
@@ -109,4 +120,9 @@ class ClusteringEvaluation:
         silhouette_vals = silhouette_score(features_array, self.predictions)
         end_silhouette = time.time()
 
-        return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix, "silhouette": silhouette_vals, "time_silhouette": end_silhouette - start_silhouette}
+         # Calcolo il numero di cluster
+        n_clusters = len(np.unique(self.predictions))
+        # Calcola la metrica finale
+        self.final_metric = self.calcolo_metrica_finale(self.purity, self.silhouette_mean, n_clusters)
+
+        return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix, "silhouette": silhouette_vals, "time_silhouette": end_silhouette - start_silhouette, "final_metric": self.final_metric}
