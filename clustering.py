@@ -186,6 +186,7 @@ class Clustering:
 
         self.data_categorical['Cluster_Kmodes'] = clusters
 
+    
     def clustering_PCA(self, n_components=2) -> pd.DataFrame:
         X = self.data_categorical
         self.n_components = n_components
@@ -193,3 +194,5 @@ class Clustering:
         pca = PCA(n_components=n_components)
         X_pca = pca.fit_transform(X)
         return pd.DataFrame(X_pca, columns=[f'PC{i+1}' for i in range(n_components)])
+
+    

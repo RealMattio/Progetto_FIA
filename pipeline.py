@@ -124,14 +124,16 @@ class Pipeline:
             encoder = OneHotEncoder(sparse_output=False)
             encoded_data = encoder.fit_transform(data_clustered)
             # poi passi a ClusteringEvaluation i dati binari
-            print(encoded_data)
+            #print(encoded_data)
 
-            self.clustering_type == 'PCA'
-            clustering.clustering_PCA()
-            data_clustered = clustering.data_categorical
             
-
-            evaluation = ev.ClusteringEvaluation(data_clustered, 'incremento_teleassistenze', 'Cluster_Kmodes', encoded_data)
+            # Fase 3: PCA
+            pca = prince.PCA(n_components=3)
+            pca_data = pca.fit_transform(pd.DataFrame(encoded_data))
+            
+            
+            #in evaluation invece di data_clustered, gli va passato pca_data
+            evaluation = ev.ClusteringEvaluation(pca_data, 'incremento_teleassistenze', 'Cluster_Kmodes', pca_data)
             #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
             results = evaluation.eval2()
             results['features'] = feature
