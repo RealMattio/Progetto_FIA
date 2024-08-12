@@ -5,9 +5,11 @@ from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime
 
 class DataPreprocessing:
-    def __init__(self, df:pd.DataFrame):
+    def __init__(self, df:pd.DataFrame, manage_dummies:bool = False, dummies_columns:list = None):
         self.df = df
         self.data = df
+        self.manage_dummies = manage_dummies
+        self.dummies_columns = dummies_columns
     #La funzione clean_data deve eseguire diverse operazioni di pulizia dei dati, in particolare deve:
     #1) Riempire i dati mancanti nel dataset
     #2) Rimuovere i duplicati
@@ -92,9 +94,8 @@ class DataPreprocessing:
 
 
         #tra tutte le colonne rimanenti si trattano come variabili categoriche tutte trann i campi data e ora e gli id
-        self.df = pd.get_dummies(self.df, columns=['sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 
-                                               'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 
-                                             'tipologia_professionista_sanitario', 'fascia_eta'])
+        if self.manage_dummies:
+            self.df = pd.get_dummies(self.df, columns=self.dummies_columns)
         return self.df
 
     #Funzione che richiama tutte le istanze delle funzioni precedentemente create
