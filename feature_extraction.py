@@ -18,7 +18,7 @@ class FeatureExtraction:
         appartenga o meno a quel quadrimestre
         '''
         for index, row in self.incrementi.iterrows():
-            self.df.loc[(self.df['anno'] == row['anno']) & (self.df['quadrimestre'] == row['quadrimestre']), 'incremento_teleassistenze'] = row['incremento_teleassistenze']
+            self.df.loc[(self.df['anno'] == row['anno']) & (self.df['trimestre'] == row['trimestre']), 'incremento_teleassistenze'] = row['incremento_teleassistenze']
 
     def extract(self) -> pd.DataFrame:
         # Estraggo l'anno e il quadrimestre dalla data di erogazione
@@ -30,13 +30,13 @@ class FeatureExtraction:
         # divido il valore ottenuto per 4 così da dividere l'anno in quadrimestri
         #+ 1 converte l'indice zero-based ottenuto dalla divisione in un quadrimestre 1-based. 
         
-        self.df['quadrimestre'] = ((self.df['data_erogazione'].dt.month - 1) // 3) + 1
+        self.df['trimestre'] = ((self.df['data_erogazione'].dt.month - 1) // 3) + 1
 
         # Raggruppo i dati per anno e quadrimestre e conto il numero di teleassistenze
-        self.incrementi = self.df.groupby(['anno', 'quadrimestre']).size().reset_index(name='numero_teleassistenze')
+        self.incrementi = self.df.groupby(['anno', 'trimestre']).size().reset_index(name='numero_teleassistenze')
         
         # Calcolo l'incremento tra i quadrimestri corrispondenti
-        self.incrementi['incremento'] = self.incrementi.groupby(['quadrimestre'])['numero_teleassistenze'].diff().fillna(0)
+        self.incrementi['incremento'] = self.incrementi.groupby(['trimestre'])['numero_teleassistenze'].diff().fillna(0)
 
         self.incrementi['incrementi_periodici'] = self.incrementi['numero_teleassistenze'].diff().fillna(0)
 

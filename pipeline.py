@@ -6,7 +6,13 @@ import clustering as cl
 import evaluation as ev
 import itertools
 from tqdm import tqdm
+import threading
 import time
+import tkinter as tk
+from tkinter import messagebox
+import json
+import os
+import pickle
 import prince
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.decomposition import PCA
@@ -21,9 +27,18 @@ def all_combinations(input_list) -> list:
         # Otteniamo le combinazioni di lunghezza r
         combinations = itertools.combinations(input_list, r)
         result.extend([list(comb) for comb in combinations])
+        '''
     for e in result:
         list(e).append('incremento_teleassistenze')
+        '''
+    result.remove(['incremento_teleassistenze'])
     return result
+
+def count_iter_folders(directory = './') -> int:
+    # Lista delle cartelle che iniziano con 'iter'
+    iter_folders = [name for name in os.listdir(directory) if os.path.isdir(os.path.join(directory, name)) and name.startswith('results_iter')]
+    
+    return len(iter_folders)
 
 # Description: Classe che si occupa di eseguire tutti i passaggi del pipeline
 class Pipeline:
@@ -39,7 +54,7 @@ class Pipeline:
     def load_data(self) -> pd.DataFrame:
         return pd.read_csv(self.path)
     
-    def run(self):
+    def run_initial_data(self):
         print(f"Running pipeline from data in {self.path}")
 
         # Fase 0: Lettura del file
@@ -54,159 +69,200 @@ class Pipeline:
         print("Feature extraction")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
-
+        #print(data.columns)
+        '''Index(['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza',
+       'asl_residenza', 'provincia_residenza', 'comune_residenza',
+       'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione',
+       'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione',
+       'tipologia_struttura_erogazione', 'id_professionista_sanitario',
+       'tipologia_professionista_sanitario', 'data_erogazione',
+       'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta', 'eta',
+       'fascia_eta', 'anno', 'quadrimestre', 'incremento_teleassistenze'],
+      dtype='object')'''
+        # Elimino i dati del 2019 perchè non hanno incremento
+        data = data[data['anno'] != 2019]
         # Fase 3: Clustering
-        print("Clustering")
+        print("Clustering and Evaluation")
         # Lista che contiene tutte le colonne con cui vorrò fare il clustering
-        lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
+        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
+        #lista_di_features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
+       #'fascia_eta', 'incremento_teleassistenze']       
         # Lista di tutte le combinazioni possibili delle features
-        features = all_combinations(lista_di_features)
-        risultati = []
-        n_cluster = self.n_cluster
-        df_cluster = data[lista_di_features]
-        clustering = cl.Clustering(df_cluster, n_cluster, clustering_model = self.clustering_type)
-        cluster_assigned = clustering.execute()
-        pd.concat([data, cluster_assigned], axis=1)
+        #features = all_combinations(lista_di_features)
+        #features = json.load(open('lista_possibili_features.json'))
+        with open('lista_possibili_features.pkl', 'rb') as file:
+            features = pickle.load(file)
+        #n_cluster = self.n_cluster
+        iter = count_iter_folders()
+        features = features[iter:]
+        print(f"Starting performing {len(features)} features combinations from iteration {iter}")
+        for feature in features:
+            cluster_assigned = pd.DataFrame()
+            risultati = []
+            print(f"Features: {feature}")
+            df_cluster = data[feature]
+            for n in tqdm(range(3, self.n_cluster + 3)):
+                clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
+                column_name = f'{self.clustering_type}_{n}_clusters_iter{iter}'
+                cluster_assigned[column_name] = clustering.execute()
+                #pd.concat([data, cluster_assigned], axis=1)
 
-        # Fase 4: Evaluation
-        print("Evaluation")
-        evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned, self.clustering_type)
-        data['Silhouette'] = evaluation.calculate_silhouette()
-        results = evaluation.evaluate()
-        results['features'] = lista_di_features
-        risultati.append(results)
-        
-        # Fase 5: Salvataggio dei risultati
-        print("Saving results")
-        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        name_file = f'test_results/test_results_{self.clustering_type}_{self.n_cluster}_{now}.csv'
-        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+                # Fase 4: Evaluation
+                #print("Evaluation")
+                evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
+                #data['Silhouette'] = evaluation.calculate_silhouette()
+                #results = evaluation.evaluate()
+                results = evaluation.eval()
+                results['features'] = feature
+                results['n_cluster'] = n
+                results['iter'] = iter
+                risultati.append(results)
+            # Salvo i risultati ad ogni iterazione
+            now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            directory = f'all_clustering_results/results_iter{iter}'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"Cartella '{directory}' creata.")
+            name_file = f'all_clustering_results/results_iter{iter}/performance_{self.clustering_type}_{feature}_{now}.csv'
+            pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+            name_cluster_file = f'all_clustering_results/results_iter{iter}/cluster_assigned_{self.clustering_type}_{feature}_{now}.csv'
+            cluster_assigned.to_csv(name_cluster_file)
+            iter += 1
+
+                
+        # # Fase 5: Salvataggio dei risultati
+        # print("Saving results")
+        # now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        # name_file = f'test_results/test_results_{self.clustering_type}_{self.n_cluster}_{now}.csv'
+        # pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+        # name_cluster_file = f'cluster_assigned/cluster_assigned_{self.clustering_type}_{now}.csv'
+        # cluster_assigned.to_csv(name_cluster_file)
 
     
-    def run2(self):
+    def run_all_features(self):
         print(f"Running pipeline from data in {self.path}")
+
+        # Fase 0: Lettura del file
         print("Reading file")
         data_preprocessing = dp.DataPreprocessing(self.data)
+        
+        # Fase 1: Data Preprocessing
         print("Data preprocessing")
-        data = data_preprocessing.clean_data()
-        #columns_with_nan = data.columns[data.isnull().any()].tolist()
-        #print(columns_with_nan)
-
-        data = data_preprocessing.transform_data()
-        dati = data[['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza', 'asl_residenza', 'provincia_residenza', 'comune_residenza', 'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario', 'tipologia_professionista_sanitario', 'data_erogazione', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta','eta', 'fascia_eta']]
-        dati_dummy = data_preprocessing.reduce_data()
-        lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
-        features = all_combinations(lista_di_features)
-
-        # Convertiamo le tuple in liste per una visualizzazione più chiara
-        features = [list(comb) for comb in features]
-        #rimuovo la sola feature 'sesso' perchè da vita a solo due cluster
-        features.remove(['sesso'])
-
-        print(f"Number of combinations: {len(features)}")
-
-        feature_extractor = fe.FeatureExtraction(dati)
-        dati = feature_extractor.extract()
-        label_counts = dati['incremento_teleassistenze'].value_counts()
-        #print(f"\nNumero di elementi per ogni incremento: {label_counts}")
-
-        feature_extractor2 = fe.FeatureExtraction(dati_dummy)
-        dati_dummy = feature_extractor2.extract()
+        data = data_preprocessing.preprocessing_data()
         
-        
-        
-        #escludo il primo quadrimestre del 2019 (Va fatto se uso l-incrmemento sequenziale)
-        #dati = dati[~((dati['anno'] == 2019) & (dati['quadrimestre'] == 1))]
-        #dati_dummy = dati_dummy[~((dati_dummy['anno'] == 2019) & (dati_dummy['quadrimestre'] == 1))]
-        
-        #escludo il 2019 (se calcolo incrememnto quadrimestre per quadrimestre)
-        dati = dati[~(dati['anno'] == 2019)]
-        dati_dummy = dati_dummy[~(dati_dummy['anno'] == 2019)]
-        label_counts = dati['incremento_teleassistenze'].value_counts()
-        print(f"\nNumero di elementi per ogni incremento dopo elminiazione 2019: {label_counts}")
-        
-        columns_with_nan = dati.columns[dati.isnull().any()].tolist()
+        # Fase 2: Feature Extraction
+        print("Feature extraction")
+        feature_extractor = fe.FeatureExtraction(data)
+        data = feature_extractor.extract()
+        #print(data.columns)
+        '''Index(['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza',
+       'asl_residenza', 'provincia_residenza', 'comune_residenza',
+       'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione',
+       'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione',
+       'tipologia_struttura_erogazione', 'id_professionista_sanitario',
+       'tipologia_professionista_sanitario', 'data_erogazione',
+       'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta', 'eta',
+       'fascia_eta', 'anno', 'quadrimestre', 'incremento_teleassistenze'],
+      dtype='object')'''
+        # Elimino i dati del 2019 perchè non hanno incremento
+        data = data[data['anno'] != 2019]
+        # Fase 3: Clustering
+        print("Clustering and Evaluation")
+        # Lista che contiene tutte le colonne con cui vorrò fare il clustering
+        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
+        features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
+            'fascia_eta', 'incremento_teleassistenze']       
+        # Lista di tutte le combinazioni possibili delle features
+        #features = all_combinations(lista_di_features)
+        #features = json.load(open('lista_possibili_features.json'))
+        print(f"Starting performing clustering on all features")
 
-        dati = dati.drop(columns=columns_with_nan)
-        #print(dati_dummy)
-        '''
-        mca = prince.MCA(n_components=3)
-        dati_da_fittare = dati.loc[:, lista_di_features]
-        print(dati_da_fittare.columns)
-        mca = mca.fit(dati_da_fittare)
-        nuovi_dati = mca.transform(dati_da_fittare)
-        print(nuovi_dati.head())
-        '''
+        cluster_assigned = pd.DataFrame()
         risultati = []
-        n = self.n_cluster
-        feature=['tutte']
-        features=[["codice_descrizione_attivita","incremento_teleassistenze"]]
-        for feature in tqdm(features):
-        #for n in tqdm(range(2,6)):
-            # seleziono solo le colonne presenti in feature
-            #feature.append('incremento_teleassistenze')
-            data = dati[feature]
-            #print(data)
-            
-            clustering = cl.Clustering(dati_dummy, n_cluster = n, data_categorical = data)
-            #clustering = cl.Clustering(nuovi_dati, n_cluster = n, data_categorical = data)
+        df_cluster = data[features]
+        for n in tqdm(range(3, self.n_cluster + 3)):
+            clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
+            column_name = f'{self.clustering_type}_{n}_clusters'
+            cluster_assigned[column_name] = clustering.execute()
+            #pd.concat([data, cluster_assigned], axis=1)
 
-            if self.clustering_type == 'kmeans':
-                clustering.clustering_kmeans()
-                data_clustered = clustering.data
-            elif self.clustering_type == 'hierarchical':
-                clustering.clustering_hierarchical()
-                data_clustered = clustering.data
-            elif self.clustering_type == 'dbscan':
-                clustering.clustering_dbscan()
-                data_clustered = clustering.data
-            elif self.clustering_type == 'expectationMaximisation':
-                clustering.clustering_expectationMaximisation()
-                data_clustered = clustering.data
-            elif self.clustering_type == 'kmodes':
-                clustering.clustering_kmodes()
-                data_clustered = clustering.data_categorical
-            
-            # EDO LAVORA QUA
-            '''
-            # effettuare encoding con OneHot 
-            encoder = OneHotEncoder(sparse_output=False)
-            encoded_data = encoder.fit_transform(data_clustered)
-            # poi passi a ClusteringEvaluation i dati binari
-            #print(encoded_data)
-            '''
-            print(data_clustered.columns)
-            # stampo i valori unici per ogni colonna
-            print(data_clustered.nunique())
-
-            encoded_data = pd.get_dummies(data_clustered).astype(float)
-
-            print(encoded_data.columns)
-            # Fase 3: PCA
-            n_components = 3
-            pca = PCA(n_components = n_components)
-            pca_data = pca.fit_transform(encoded_data)
-            
-            
-            #in evaluation invece di data_clustered, gli va passato pca_data
-            evaluation = ev.ClusteringEvaluation(pca_data, 'incremento_teleassistenze', 'Cluster_Kmodes', pca_data)
-            #evaluation = ev.ClusteringEvaluation(data, 'incremento_teleassistenze', 'Cluster_EM')
-            results = evaluation.eval2()
-            results['features'] = feature
+            # Fase 4: Evaluation
+            #print("Evaluation")
+            evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
+            #data['Silhouette'] = evaluation.calculate_silhouette()
+            #results = evaluation.evaluate()
+            results = evaluation.eval()
+            results['features'] = features
             results['n_cluster'] = n
-
-            label_counts = data_clustered['Cluster_Kmodes'].value_counts()
-            results['cluster counts'] = label_counts
-            label_counts = data_clustered['incremento_teleassistenze'].value_counts()
-            results['label counts'] = label_counts
-
             risultati.append(results)
+        # Salvo i risultati ad ogni iterazione
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        directory = f'all_clustering_results/results_all_features'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Cartella '{directory}' creata.")
+        name_file = f'{directory}/performance_{self.clustering_type}_all_features_{now}.csv'
+        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+        name_cluster_file = f'{directory}/cluster_assigned_{self.clustering_type}_all_features_{now}.csv'
+        cluster_assigned.to_csv(name_cluster_file)
+    
+
+                
+        # # Fase 5: Salvataggio dei risultati
+        # print("Saving results")
+        # now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        # name_file = f'test_results/test_results_{self.clustering_type}_{self.n_cluster}_{now}.csv'
+        # pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+        # name_cluster_file = f'cluster_assigned/cluster_assigned_{self.clustering_type}_{now}.csv'
+        # cluster_assigned.to_csv(name_cluster_file)
+
+    def run(self):
+        dir = 'all_clustering_results'
+        folders = [dir+'/'+name for name in os.listdir(dir) if os.path.isdir(dir+'/'+name) and name.startswith('results_')]
+
+        # se il numero di elementi presenti nella folder è maggiore di 2 allora leggo l'elemento che inizia con 'performance' e leggo le purity
+        cluster_to_save = None
+        performance_to_save = None
+        for folder in tqdm(folders):
+            # Conto il numero di file nella cartella
+            file_in_folder = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
         
-        #salvo i dati in un csv
-        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_json('test_results/test_results_Kmodes_old_labels_Huang_scelta_features_trimestri.json')
+            # Variabile per il nome del file
+            nome_file_performance = None
 
+            # Controlla se ci sono più di due file
+            if len(file_in_folder) >= 2:
+                # Cerca un file il cui nome inizia con 'performance'
+                for file in file_in_folder:
+                    if file.startswith('performance'):
+                        # Salva il nome del file
+                        nome_file_performance = file
+                        # Apri e leggi il contenuto del file
+                        with open(os.path.join(folder, file), 'r') as f:
+                            data_performance = pd.read_csv(f)  
 
-
-
-
-   
+                    elif file.startswith('cluster_assigned'):
+                        # Apri e leggi il contenuto del file
+                        with open(os.path.join(folder, file), 'r') as f:
+                            data_cluster = pd.read_csv(f)
+                    
+                    # Se entrambi i file sono stati letti, esco dal ciclo
+                    if nome_file_performance and data_cluster is not None:
+                        break
+                # seleziono le righe con putiry maggiore di 0.7
+                data_performance = data_performance[data_performance['purity'] > 0.7]
+                # salvo i valori unici contenuti nella colonna 'n_cluster'
+                n_cluster = data_performance['n_cluster'].unique()
+                # seleziono le colonne di 'data_cluster' che iniziano con 'kmodes'
+                for n in n_cluster:
+                    column_name = f'kmodes_{n}'
+                    cluster_to_save = pd.concat([cluster_to_save, data_cluster.loc[:, data_cluster.columns.str.startswith(column_name)]], axis=1)
+                performance_to_save = pd.concat([performance_to_save, data_performance])
+        
+        # Salvo i risultati
+        directory = 'best_results'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Cartella '{directory}' creata.")
+        performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance')
+        cluster_to_save.to_csv(f'{directory}/best_cluster_assigned')

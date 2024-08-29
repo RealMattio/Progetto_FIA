@@ -47,29 +47,10 @@ class ClusteringEvaluation:
         purity = np.sum(np.amax(contingency_matrix, axis=0)) / np.sum(contingency_matrix) # 0 = scorre le righe fissando le colonne, 1 = viceversa! NOI LA DOBBIAMO FISSARE LE COLONNE!
         return purity, contingency_matrix
     
-    '''
-    def evaluate(self) -> tuple:
-        ''
-        Valuta la bontà del clustering
-        :return: tupla che contiene come primo elemento il DataFrame al quale sono stati aggiunti i valori di 
-        silhouette per ogni punto e come secondo elemento un dizionario con i valori di purezza, silhouette media e deviazione standard
-        ''
-        self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
-        self.purity = self.purity.item()
-        #self.purity = purity_score(self.labels, self.predictions)
-        self.data = self.calculate_silhouette()
-        self.silhouette_mean = self.data['silhouette'].mean().item()
-        self.silhouette_std = self.data['silhouette'].std().item()
-        # calcolo il numero di cluster
-        N = len(self.data[self.predictions_name].unique())
-        # calcolo la media tra purezza e silhouette_mean e sottraggo 0.05 volte il numero di cluster
-
-        self.final_metric = mean([self.purity, self.silhouette_mean]) - 0.05*N
-        return self.data, {"purity": self.purity, "silhouette_mean": self.silhouette_mean, "silhouette_std": self.silhouette_std, "final_metric": self.final_metric}
-    '''
+    
     def eval(self) -> dict:
         '''
-        Valuta la bontà del clustering
+        Valuta la bontà del clustering calcolando solo la purezza
         :return: Dizionario con i valori di purezza, silhouette media e deviazione standard
         '''
         self.purity, self.contingency_matrix = self.purity_score(self.labels, self.predictions)
@@ -106,7 +87,7 @@ class ClusteringEvaluation:
 
         return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix, "silhouette": silhouette_vals, "time_silhouette": end_silhouette - start_silhouette} #"final_metric": self.final_metric
 
-    def calculate_silhouette(self) -> pd.DataFrame:
+    def calculate_silhouette(self) -> pd.DataFrame: #OK
         '''
         Calcola i valori di silhouette per ogni punto
         Se il dataset è dotato di valori features categoriche è necessario convertirli in valori numerici, questo sarà vero solo se è stato usato il KModes
@@ -127,7 +108,7 @@ class ClusteringEvaluation:
         self.silhouette_vals = pd.DataFrame(silhouette_vals, columns = ['silhouette'])
         return self.silhouette_vals
     
-    def calculate_final_metric(self) -> float:
+    def calculate_final_metric(self) -> float: #OK
         '''
         La metrica finale è calcolata come la media tra purezza e silhouette_mean meno 0.05 volte il numero di cluster
         '''
@@ -135,7 +116,7 @@ class ClusteringEvaluation:
         final_metric = mean([self.purity, self.silhouette_mean]) - penalty
         return final_metric
     
-    def evaluate(self) -> dict:
+    def evaluate(self) -> dict: #OK
         '''
         Calcolo la purezza, la silhouette media standardizzata e la metrica finale
         '''
