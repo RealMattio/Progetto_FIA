@@ -164,7 +164,16 @@ cython_debug/
 
 challenge_campus_biomedico.pdf
 prova.py
+prova2.py
+prova3.py
 prova.ipynb
 data/challenge_campus_biomedico_2024.parquet
 data/challenge_campus_biomedico_2024.csv
 data/challenge_campus_biomedico_2024.zip
+test_results/
+
+best_results/best_cluster_assigned.csv
+all_clustering_results/
+main_2.py
+#best_results/best_cluster_assigned.csv
+
