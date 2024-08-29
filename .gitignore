@@ -171,3 +171,4 @@ data/challenge_campus_biomedico_2024.csv
 data/challenge_campus_biomedico_2024.zip
 test_results/
 
+best_results/best_cluster_assigned.csv
