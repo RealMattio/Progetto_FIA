@@ -264,5 +264,5 @@ class Pipeline:
         if not os.path.exists(directory):
             os.makedirs(directory)
             print(f"Cartella '{directory}' creata.")
-        performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance')
-        cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned')
+        performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance,csv')
+        cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned.parquet')
