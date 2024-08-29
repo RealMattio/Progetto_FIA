@@ -265,4 +265,4 @@ class Pipeline:
             os.makedirs(directory)
             print(f"Cartella '{directory}' creata.")
         performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance')
-        cluster_to_save.to_csv(f'{directory}/best_cluster_assigned')
+        cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned')
