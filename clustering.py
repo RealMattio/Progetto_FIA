@@ -7,6 +7,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.datasets import make_blobs
 from sklearn.mixture import GaussianMixture as GM
 from sklearn.cluster import AgglomerativeClustering
+from kmodes.kmodes import KModes
 
 
 class Clustering:
