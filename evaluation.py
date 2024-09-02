@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import metrics
-from sklearn.metrics import silhouette_samples#, silhouette_score
+from sklearn.metrics import silhouette_samples, silhouette_score
 from statistics import mean
 import time
 from sklearn.decomposition import PCA
@@ -9,12 +9,13 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 class ClusteringEvaluation:
-    def __init__(self, data:pd.DataFrame, labels:pd.DataFrame, predictions:pd.DataFrame, clustering_type:str, n_components:int = 3):
+    def __init__(self, data:pd.DataFrame, labels:pd.DataFrame, predictions:pd.DataFrame, clustering_type:str, reduction:bool = False, n_components:int = 3):
         '''
         :param data: DataFrame contenente i dati
         :param labels_col: Dataframe contenente le etichette reali
         :param predictions_col: Dataframe contenente le etichette predette
         :param clustering_type: Tipo di algoritmo di clustering utilizzato
+        :param reduction: Booleano che indica se andra' stata fatta una riduzione di dimensionalità con PCA per velocizzare il calcolo della shilouette
         :param n_components: Numero di componenti principali da considerare per la PCA
         '''
         self.data = data
@@ -25,6 +26,7 @@ class ClusteringEvaluation:
         self.silhouette_std = None
         self.final_metric = None
         self.clustering_type = clustering_type
+        self.reduction = reduction
         self.n_components = n_components
 
     def purity_score(self, y_true, y_pred) -> float:
@@ -94,12 +96,15 @@ class ClusteringEvaluation:
         '''
         if self.clustering_type == 'kmodes':
             encoded_data = pd.get_dummies(self.data).astype(float)
-            if min(encoded_data.shape) > self.n_components:
-                pca = PCA(n_components = self.n_components)
-                reduced_data = pca.fit_transform(encoded_data)
+            if self.reduction:
+                if min(encoded_data.shape) > self.n_components:
+                    pca = PCA(n_components = self.n_components)
+                    reduced_data = pca.fit_transform(encoded_data)
+                else:
+                    pca = PCA(n_components = min(encoded_data.shape))
+                    reduced_data = pca.fit_transform(encoded_data)
             else:
-                pca = PCA(n_components = min(encoded_data.shape))
-                reduced_data = pca.fit_transform(encoded_data)
+                reduced_data = encoded_data
         start_time = time.time()
         silhouette_vals = silhouette_samples(reduced_data, self.predictions)
         end_time = time.time()

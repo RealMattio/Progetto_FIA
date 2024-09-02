@@ -17,6 +17,7 @@ import prince
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.decomposition import PCA
 from datetime import datetime
+import ast
 
 
 # Funzione per ottenere tutte le combinazioni degli elementi di una lista
@@ -266,3 +267,87 @@ class Pipeline:
             print(f"Cartella '{directory}' creata.")
         performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance,csv')
         cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned.parquet')
+
+    
+    def run_evaluation(self):
+        print("Reading file")
+        data_preprocessing = dp.DataPreprocessing(self.data)
+        
+        # Fase 1: Data Preprocessing
+        print("Data preprocessing")
+        data = data_preprocessing.preprocessing_data()
+        
+        # Fase 2: Feature Extraction
+        print("Feature extraction")
+        feature_extractor = fe.FeatureExtraction(data)
+        data = feature_extractor.extract()
+        
+        # Elimino i dati del 2019 perchè non hanno incremento
+        data = data[data['anno'] != 2019]
+        # Fase 3: evaluation
+        print("Evaluation")
+        
+        features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
+            'fascia_eta', 'incremento_teleassistenze']       
+        
+        print(f"Starting performing evaluation on best features combinations")
+        
+        # leggo le performance migliori già filtrate: con purity maggiore di 0.9 e con un numero di features maggiore o uguale a 4
+        performances = pd.read_csv('best_results/best_performance_filtered.csv')
+        assegnazioni = pd.read_parquet('best_results/best_cluster_assigned.parquet')
+        silhouettes = pd.DataFrame()
+        risultati = []
+        if os.path.exists('best_results/index.json'):
+            with open('best_results/index.json', 'r') as f:
+                l = json.load(f)
+                index_done = l['index']
+        else:
+            index_done = 0
+ 
+        for index, performace in tqdm(performances.iterrows()):
+            if index < index_done:
+                continue
+            features = ast.literal_eval(performace['features'])
+            n_cluster = performace['n_cluster']
+            iter = performace['iter']
+            
+            data_to_eval = data[features]
+            cluster_assigned = assegnazioni[[f'kmodes_{n_cluster}_clusters_iter{iter}']]
+            
+            evaluation = ev.ClusteringEvaluation(data_to_eval, data[['incremento_teleassistenze']], cluster_assigned, self.clustering_type, True, 10)
+            silhouette = evaluation.calculate_silhouette()
+            silhouette.rename(columns={'silhouette': f'silhouette_kmodes_{n_cluster}_clusters_iter{iter}'}, inplace=True)
+            
+            if os.path.exists('best_results/silhouettes.csv'):
+                silhouettes = pd.read_csv('best_results/silhouettes.csv')
+                silhouettes = pd.concat([silhouettes, silhouette])
+                silhouettes.to_csv('best_results/silhouettes.csv')
+            else:
+                silhouette.to_csv('best_results/silhouettes.csv')
+            
+            results = evaluation.evaluate()
+            results['features'] = features
+            results['n_cluster'] = n_cluster
+            results['iter'] = iter
+            if os.path.exists('best_results/risultati.csv'):
+                risultati = pd.read_csv('best_results/risultati.csv')
+                risultati = pd.concat([risultati, results])
+                risultati.to_csv('best_results/risultati.csv')
+                '''
+                risultati = json.load(open('best_results/risultati.csv'))
+                risultati.append(results)
+                json.dump(risultati, open('best_results/risultati.csv', 'w'))
+                '''
+            else:
+                pd.DataFrame(results).to_csv('best_results/risultati.csv')
+                '''
+                risultati.append(results)
+                json.dump(risultati, open('best_results/risultati.csv', 'w'))
+                '''
+            
+            index += 1
+            with open('best_results/index.json', 'w') as f:
+                json.dump({'index': index}, f)
+            
+
+
