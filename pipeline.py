@@ -300,12 +300,12 @@ class Pipeline:
         if os.path.exists('best_results/index.json'):
             with open('best_results/index.json', 'r') as f:
                 l = json.load(f)
-                index_done = l['index']
+                index = l['index']
         else:
-            index_done = 0
+            index = 0 
  
-        for index, performace in tqdm(performances.iterrows()):
-            if index < index_done:
+        for ind, performace in tqdm(performances.iterrows()):
+            if ind < index:
                 continue
             features = ast.literal_eval(performace['features'])
             n_cluster = performace['n_cluster']
@@ -326,20 +326,21 @@ class Pipeline:
                 silhouette.to_csv('best_results/silhouettes.csv')
             
             results = evaluation.evaluate()
-            results['features'] = features
+            results['features'] = str(features)
             results['n_cluster'] = n_cluster
             results['iter'] = iter
+            results = pd.DataFrame(results, index=[0])
             if os.path.exists('best_results/risultati.csv'):
                 risultati = pd.read_csv('best_results/risultati.csv')
                 risultati = pd.concat([risultati, results])
-                risultati.to_csv('best_results/risultati.csv')
+                risultati.to_csv('best_results/risultati.csv', index=False)
                 '''
                 risultati = json.load(open('best_results/risultati.csv'))
                 risultati.append(results)
                 json.dump(risultati, open('best_results/risultati.csv', 'w'))
                 '''
             else:
-                pd.DataFrame(results).to_csv('best_results/risultati.csv')
+                pd.DataFrame(results).to_csv('best_results/risultati.csv', index=False)
                 '''
                 risultati.append(results)
                 json.dump(risultati, open('best_results/risultati.csv', 'w'))

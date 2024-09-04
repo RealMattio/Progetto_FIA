@@ -1,1 +1,29 @@
-[{"purity": 0.9585562325469607, "contingency_matrix": 
+purity,contingency_matrix,silhouette_mean,final_metric,time_silhouette,features,n_cluster,iter
+0.9585562325469608,"[[     0   1470      0   1108  58329]
+ [     0   3677 146779   2804      0]
+ [118472   2739      0   2036      0]
+ [  4513  60473      0   1183      0]]",0.79390170079674,0.6262289666718504,2897.867686510086,"['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,47
+0.9414593776249248,"[[ 55320   3999   1588      0]
+ [  2461      0   4859 145940]
+ [  1937 118047   3263      0]
+ [  1083   4436  60650      0]]",0.7956560558633018,0.6685577167441132,2620.781143426895,"['asl_residenza','asl_erogazione','tipologia_struttura_erogazione','tipologia_professionista_sanitario','incremento_teleassistenze']",4,89
+0.9366103131202256,"[[  2439      0  56319    128   2021]
+ [  5485 130521      0      0  17254]
+ [118710      0      0    199   4338]
+ [  6165   2301      0  55196   2507]]",0.7563935498238867,0.5965019314720561,2492.661859512329,"['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,45
+0.9305867690165344,"[[  2393   2716   2312  53486]
+ [  5273   6900 141087      0]
+ [  7734 114827    348    338]
+ [ 66169      0      0      0]]",0.7684237661625142,0.6495052675895243,2558.403470039368,"['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,53
+0.9191962991503606,"[[  3222  54911    189    156   2429]
+ [  1293   4207   3144  76414  68202]
+ [  6509   6297 108346      0   2095]
+ [ 63099     52    142      0   2876]]",0.7096382357395649,0.5644172674449628,2549.392567396164,"['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,64
+0.9115002366303834,"[[  4019  55930     62    896      0]
+ [151657    406    140    677    380]
+ [  8122  11477 101415   1836    397]
+ [  2300   1962   3043  20514  38350]]",0.7245606161620667,0.568030426396225,2622.7702639102936,"['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,53
+0.905278468121799,"[[  4273   9319  45758    960      0    597]
+ [     0  48510   1767   3064  98582   1337]
+ [114630   4175   1377   1864      0   1201]
+ [  4513   2999    782  19282      0  38593]]",0.7362073880682382,0.5207429280950185,2581.5703489780426,"['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,47

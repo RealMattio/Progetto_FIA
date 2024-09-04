@@ -176,4 +176,6 @@ best_results/best_cluster_assigned.csv
 all_clustering_results/
 main_2.py
 #best_results/best_cluster_assigned.csv
+best_results/risultati_old.csv
+best_results/silhouettes_old.csv
 

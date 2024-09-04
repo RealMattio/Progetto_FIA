@@ -129,4 +129,4 @@ class ClusteringEvaluation:
         silh_normalized = scaler.fit_transform(self.silhouette_vals)
         self.silhouette_mean = silh_normalized.mean().item()
         final_metric = self.calculate_final_metric()
-        return {"purity": self.purity.item(), "contingency_matrix": self.contingency_matrix, "silhouette_mean": self.silhouette_mean, "final_metric": final_metric, "time_silhouette": self.time_silhouette}
+        return {"purity": self.purity.item(), "contingency_matrix": np.array2string(self.contingency_matrix), "silhouette_mean": self.silhouette_mean, "final_metric": final_metric, "time_silhouette": self.time_silhouette}
