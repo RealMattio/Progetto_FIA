@@ -270,6 +270,7 @@ class Pipeline:
 
     
     def run_evaluation(self):
+        # Eseguo nuovamente la fase di lettura e preprocessing del dataset
         print("Reading file")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
@@ -292,32 +293,41 @@ class Pipeline:
         
         print(f"Starting performing evaluation on best features combinations")
         
-        # leggo le performance migliori già filtrate: con purity maggiore di 0.9 e con un numero di features maggiore o uguale a 4
+        # leggo le performance migliori già filtrate nelle fasi precedenti: con purity maggiore di 0.9 e con un numero di features maggiore o uguale a 4
         performances = pd.read_csv('best_results/best_performance_filtered.csv')
         assegnazioni = pd.read_parquet('best_results/best_cluster_assigned.parquet')
         silhouettes = pd.DataFrame()
         risultati = []
+        # poiche' in questa fase il calcolo della silhouette richiede molto tempo, si utilizza l'indice per riprendere il calcolo da dove si era interrotto
+        # se l'indice non esiste, si parte da 0, altrimenti si parte dall'indice salvato
         if os.path.exists('best_results/index.json'):
             with open('best_results/index.json', 'r') as f:
                 l = json.load(f)
                 index = l['index']
         else:
             index = 0 
- 
+
+        # itero su tutte le performance filtrate
         for ind, performace in tqdm(performances.iterrows()):
+            # se l'indice è minore di quello salvato, salto l'iterazione perche' il calcolo è già stato fatto
             if ind < index:
                 continue
+            # all'interno di performance ho salvato le features come una stringa. La converto in lista
             features = ast.literal_eval(performace['features'])
             n_cluster = performace['n_cluster']
             iter = performace['iter']
             
+            # seleziono solo le colonne che sono state utilizzate per il clustering relativamente alla performance corrente
             data_to_eval = data[features]
+            # seleziono solo le assegnazioni relative alla performance corrente, che sono poi le predizioni fatte con quel clustering
             cluster_assigned = assegnazioni[[f'kmodes_{n_cluster}_clusters_iter{iter}']]
             
+            # Fase 4: Evaluation
             evaluation = ev.ClusteringEvaluation(data_to_eval, data[['incremento_teleassistenze']], cluster_assigned, self.clustering_type, True, 10)
             silhouette = evaluation.calculate_silhouette()
             silhouette.rename(columns={'silhouette': f'silhouette_kmodes_{n_cluster}_clusters_iter{iter}'}, inplace=True)
             
+            # Salvo la silhouette di tutti i punti così da poterla utilizzare per i grafici
             if os.path.exists('best_results/silhouettes.csv'):
                 silhouettes = pd.read_csv('best_results/silhouettes.csv')
                 silhouettes = pd.concat([silhouettes, silhouette])
@@ -325,6 +335,7 @@ class Pipeline:
             else:
                 silhouette.to_csv('best_results/silhouettes.csv')
             
+            # Salvo i risultati
             results = evaluation.evaluate()
             results['features'] = str(features)
             results['n_cluster'] = n_cluster
@@ -334,18 +345,11 @@ class Pipeline:
                 risultati = pd.read_csv('best_results/risultati.csv')
                 risultati = pd.concat([risultati, results])
                 risultati.to_csv('best_results/risultati.csv', index=False)
-                '''
-                risultati = json.load(open('best_results/risultati.csv'))
-                risultati.append(results)
-                json.dump(risultati, open('best_results/risultati.csv', 'w'))
-                '''
+                
             else:
                 pd.DataFrame(results).to_csv('best_results/risultati.csv', index=False)
-                '''
-                risultati.append(results)
-                json.dump(risultati, open('best_results/risultati.csv', 'w'))
-                '''
-            
+                
+            # aggiorno e salvo l'indice
             index += 1
             with open('best_results/index.json', 'w') as f:
                 json.dump({'index': index}, f)
