@@ -1,0 +1,401 @@
+purity,contingency_matrix,features,n_cluster,iter_on_best_performances,kmodes_init_type,kmodes_n_init
+0.3797484036740893,"[[17042 12615  6785 24465]
+ [43812 30974 15911 62563]
+ [34704 25422 13494 49627]
+ [19036 13484  6785 26864]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,1
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,1
+0.91747174682779,"[[ 54605   2303   3999      0]
+ [  2660 141094   9506      0]
+ [  2181      0   8420 112646]
+ [  1187   3051  61931      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,2
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,2
+0.7765515395841748,"[[ 47676   1287   4273   7671]
+ [122635   2738   9506  18381]
+ [  5469   2460 114134   1184]
+ [  3051  58253   4260    605]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,3
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,3
+0.7380960050348999,"[[  8188   2682      0  50037]
+ [ 47093   4482 101685      0]
+ [ 16309  99068   7870      0]
+ [ 19564  42092   4513      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,4
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,4
+0.8088621175817614,"[[ 50884  10023      0      0]
+ [148005   5255      0      0]
+ [     0  40283  82964      0]
+ [     0  10978      0  55191]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,5
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,5
+0.8573428514085083,"[[ 35969   1462  23476      0]
+ [150196   3064      0      0]
+ [  7404 114827   1016      0]
+ [     0   1551   7108  57510]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,6
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,6
+0.7849612099617674,"[[ 47200   4273   1989   7445]
+ [  1092  10043 119096  23029]
+ [  4056 114515   3263   1413]
+ [ 60157   4260   1752      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,7
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,7
+0.9366598692214488,"[[  1480      0    935  58492]
+ [141378   9506   2376      0]
+ [  3121 118215   1911      0]
+ [  1721   4513  59935      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,8
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,8
+0.6734401597688704,"[[ 44573      0  10010   6324]
+ [     0 113762  24978  14520]
+ [118529      0   4175    543]
+ [ 48983      0  10970   6216]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,9
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,9
+0.6953563455348714,"[[  8721   2682  45505   3999]
+ [ 22051   6757   2588 121864]
+ [ 36723  76542   2112   7870]
+ [ 19799  40720   1137   4513]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,10
+0.8843806602359366,"[[  4273   2823   1989  51822]
+ [139591   5823   4051   3795]
+ [  8420 108562   3263   3002]
+ [  4513   3051  56946   1659]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Cao,10
+0.7270425166570446,"[[ 18348  37723   4293    543]
+ [ 20790   4519 117279  10672]
+ [ 17158 105894    195      0]
+ [ 59577   4230   1857    505]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,1
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,1
+0.82351833451855,"[[ 54240   2478   1912   2277]
+ [153247      0      0     13]
+ [  5158 113406      0   4683]
+ [  2619   2523  61022      5]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,2
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,2
+0.7288166250808384,"[[ 14158  37916   6887   1946]
+ [ 21767 129695   1798      0]
+ [ 15157   3442  25023  79625]
+ [ 59795   4074    758   1542]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,3
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,3
+0.6640839678579128,"[[ 42260   9662   2166   6819]
+ [  4038  34201  96323  18698]
+ [118791   2109      0   2347]
+ [ 45941  10568   1943   7717]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,4
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,4
+0.8989798876563185,"[[  3462  57034    178    233]
+ [  7868   9442 135950      0]
+ [  6461   8233   4472 104081]
+ [ 65748     79    176    166]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,5
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,5
+0.9358273267208976,"[[  4463   1826   2365  52253]
+ [ 10808   4655 137797      0]
+ [  1167 121671    195    214]
+ [ 65963      0    111     95]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,6
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,6
+0.769254403679045,"[[ 59535    233   1139      0]
+ [     0  13770  46720  92770]
+ [  9409 111433   2405      0]
+ [ 51066   6582   8521      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,7
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,7
+0.6423610508866825,"[[ 41568   9701   2849   6789]
+ [ 12919  34321  87185  18835]
+ [118905   2076    130   2136]
+ [ 44859  10634   3077   7599]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,8
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,8
+0.7966019381391188,"[[ 47625   3133   7963   2186]
+ [  4794   6357  48938  93171]
+ [120788    112   2347      0]
+ [  6461  58598    956    154]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,9
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,9
+0.7909971430907645,"[[ 59755      0      0   1152]
+ [  5505 144454      0   3301]
+ [  4047   4176  97931  17093]
+ [ 52714   2357   2470   8628]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Huang,10
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,10
+0.5195560764452417,"[[ 42421   7791    538    463   9694]
+ [107071  20566    589    962  24072]
+ [ 85851  16135   1067    835  19359]
+ [  4513   1668  18399  39576   2013]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,1
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,1
+0.7500538922600803,"[[57035   619  2303     0   950]
+ [    0 46852  4482 99365  2561]
+ [ 8420 16043 96896     0  1888]
+ [53239  8893  2905     0  1132]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,2
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,2
+0.698329711608269,"[[  8566   1354   1855  45133   3999]
+ [ 21407   3252 115446   3112  10043]
+ [ 37420  73792   2581   1584   7870]
+ [ 19180  39029   2033   1414   4513]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,3
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,3
+0.9078504297752878,"[[  1483   4273   9157  45994      0]
+ [  3473      0  47622   1637 100528]
+ [  2956 113818   4175   2298      0]
+ [ 58431   4260   2314   1164      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,4
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,4
+0.5895292913725305,"[[  4273   7371   1823   7222  40218]
+ [105243  21815   2186  20337   3679]
+ [ 84159  15343   3745  14880   5120]
+ [  4513   8012  50311    799   2534]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,5
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,5
+0.6881087657309649,"[[ 8789  1485  4273  8006 38354]
+ [28479 92337  9506 20945  1993]
+ [17795  3054 97594  2434  2370]
+ [11947 39419  4513  8903  1387]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,6
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,6
+0.7668806664304493,"[[ 37665   8409  12033   2800      0]
+ [  9831  46438   5544  91447      0]
+ [116522   2482   4175     68      0]
+ [     0   9482  10446   3181  43060]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,7
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,7
+0.6602408922080464,"[[  4273   8317   7962   1485  38870]
+ [105268  21815  21025   2776   2376]
+ [  8420  17251  16181  79484   1911]
+ [ 45372   9269   8775   1692   1061]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,8
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,8
+0.8192614654234692,"[[  1089   7636   4198   2682  45302]
+ [115757  21731   9506   4339   1927]
+ [  2082  15295   8275  94997   2598]
+ [  1006   8396  52853   2534   1380]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,9
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,9
+0.8593176620422565,"[[ 2136  7514   608 46650  3999]
+ [ 1092 47447 92967  2248  9506]
+ [ 4056 15365  1187  2851 99788]
+ [59954     0   606  1349  4260]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Huang,10
+0.8843806602359366,"[[  4273   2682   1989  51822    141]
+ [136822   5823   4051   3795   2769]
+ [  8420 108562   3263   3002      0]
+ [  4513   2903  56946   1659    148]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,2,Cao,10
+0.4124876419472574,"[[ 36761   2564   1596   1376  18610]
+ [133827   5898   4277   3861   5397]
+ [ 98564   4800   3535   2954  13394]
+ [ 52934   2391   1878   1698   7268]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,1
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,1
+0.7805829284186896,"[[ 58369      0      0   2532      6]
+ [  5367   5500 125414  16964     15]
+ [  3928 112139      0   5036   2144]
+ [ 52925   2523   2391   7280   1050]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,2
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,2
+0.7466791217667741,"[[15008 36120  6378  2867   534]
+ [57252   203  5341  1621 88843]
+ [15414 93842 13919    72     0]
+ [ 7280  4300  7062 47491    36]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,3
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,3
+0.7821612902426515,"[[ 58492     89      0     13   2313]
+ [ 13766 133719    364     22   5389]
+ [  4716   7842 103431   2693   4565]
+ [ 41388   3797   2431   1221  17332]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,4
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,4
+0.7927836405398642,"[[ 32774  24299   2549    189   1096]
+ [  3960  16741   5238 123676   3645]
+ [  3258  14765 105195      0     29]
+ [ 63139   2721    162    142      5]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,5
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,5
+0.7564515849280073,"[[  2564  53766    105   2211   2261]
+ [131263      0    183  16678   5136]
+ [ 10190   4453  97616   5020   5968]
+ [ 49371   2347   4540   7194   2717]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,6
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,6
+0.971688599371133,"[[     0  60896      0     11      0]
+ [149330      0      0   3930      0]
+ [  4800      0 118418     29      0]
+ [  2391      0   2523   1672  59583]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,7
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,7
+0.8100564196212428,"[[ 38045   2507   3215   4969  12171]
+ [     0 130908    109  16964   5279]
+ [113869      0    105   4720   4553]
+ [  5891   2339  53013   2429   2497]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,8
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,8
+0.8807581092365139,"[[  2564   6656   3286    154  48247]
+ [136436  16678    146      0      0]
+ [ 10706  13424  98822      0    295]
+ [  2391   7361   1141  55276      0]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,9
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,9
+0.8032300666777342,"[[ 34704   4749   7453  14001      0]
+ [  3306   5428  41130   5389  98007]
+ [  2635 110806   5183   4623      0]
+ [ 60226    162   2911   2728    142]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,10
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]","['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,10
+0.7835736391275153,"[[  2532  58188     78    107      2]
+ [ 13599   4480 120204  12399   2578]
+ [122868      0    176    195      8]
+ [ 54035   2134   4123   4812   1065]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,1
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,1
+0.7441616718246309,"[[  1938   9614   3141   6565  39649]
+ [ 12360  35466  87549  17495    390]
+ [120172   1450     94   1531      0]
+ [ 42719  10981   3225   7506   1738]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,2
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,2
+0.8815832183218817,"[[  3421   7769   5864  43773     80]
+ [  7106  47436  98394    107    217]
+ [120837   1812    338     88    172]
+ [  3758   8394   5905   2760  45352]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,3
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,3
+0.8378375699670204,"[[  9873   5599  45039    163    233]
+ [ 53121 100010    129      0      0]
+ [ 20205   3904   5952   3414  89772]
+ [ 10947   1930   3097  50195      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,4
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,4
+0.916671415793034,"[[  2461   2115   4675   7349  44307]
+ [  5479 145905    238   1638      0]
+ [105430      0    227  17590      0]
+ [  6250   2409  56721    647    142]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,5
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,5
+0.7747749533553198,"[[ 59545    178   1037      0    147]
+ [  6900 134681   2870   8809      0]
+ [  8073   3844  37374   1679  72277]
+ [ 47718   6250   8644   1624   1933]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,6
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,6
+0.8446763119358348,"[[  2535   9275  49039      0     58]
+ [128931  24082      0    135    112]
+ [ 12368  17785    324  92663    107]
+ [  6317  10268   1871   1531  46182]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,7
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,7
+0.9295089238149278,"[[  2496   2087   1889   7602  46833]
+ [  5440 144883      0   2937      0]
+ [105843      0      0  17404      0]
+ [  2280   2480  60171   1238      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,8
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,8
+0.798244722894671,"[[ 59622      0    285   1000      0]
+ [  5051 128021  20128     60      0]
+ [  4072   3462   1326  37359  77028]
+ [ 51173   2218   7812   2821   2145]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,9
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,9
+0.9612124395725292,"[[  2463    658  57169      0    617]
+ [  5475   1550      0 144572   1663]
+ [103146      0      0      0  20101]
+ [  2507  62941      0      0    721]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,10
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]","['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,10

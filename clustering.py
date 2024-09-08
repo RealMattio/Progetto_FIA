@@ -11,7 +11,7 @@ from kmodes.kmodes import KModes
 
 
 class Clustering:
-    def __init__(self, data, n_cluster, clustering_model = 'kmodes', dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10):
+    def __init__(self, data, n_cluster, clustering_model = 'kmodes', dbscan_eps = 3, dbscan_min_samples = 15, GM_n_init = 10, kmodes_init = 'Huang', kmodes_n_init = 4):
         '''
         Costruttore della classe Clustering
         :param data: dataset da clusterizzare, già preprocessato e organizzato rispetto al modello di clustering che si intendere utilizzare
@@ -27,6 +27,8 @@ class Clustering:
         self.dbscan_eps = dbscan_eps
         self.dbscan_min_samples = dbscan_min_samples
         self.GM_n_init = GM_n_init
+        self.kmodes_init = kmodes_init
+        self.kmodes_n_init = kmodes_n_init
         self.cluster = None
     
     def clustering_kmeans(self) -> pd.DataFrame:
@@ -72,7 +74,7 @@ class Clustering:
     
     def clustering_kmodes(self) -> pd.DataFrame:
         X = self.data_to_cluster
-        km = KModes(n_clusters = self.n_cluster, init='Huang', n_init=4, verbose=0)
+        km = KModes(n_clusters = self.n_cluster, init=self.kmodes_init, n_init=self.kmodes_n_init, verbose=0)
         clusters = km.fit_predict(X)
         self.cluster = pd.DataFrame({'Cluster_Kmodes': clusters})
 

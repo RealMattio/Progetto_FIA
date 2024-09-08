@@ -347,8 +347,106 @@ class Pipeline:
                 '''
             
             index += 1
-            with open('best_results/index.json', 'w') as f:
-                json.dump({'index': index}, f)
-            
+            if os.path.exists('best_results/index.json'):
+                with open('best_results/index.json', 'r') as f:
+                    indici = json.load(f)
+                indici['index'] = index
+                with open('best_results/index.json', 'w') as f:
+                    json.dump(indici, f)
+            else:
+                with open('best_results/index.json', 'w') as f:
+                    json.dump({'index': index}, f)
+        
+    def run_hp_tuning(self):
+        print("Reading file")
+        data_preprocessing = dp.DataPreprocessing(self.data)
+        
+        # Fase 1: Data Preprocessing
+        print("Data preprocessing")
+        data = data_preprocessing.preprocessing_data()
+        
+        # Fase 2: Feature Extraction
+        print("Feature extraction")
+        feature_extractor = fe.FeatureExtraction(data)
+        data = feature_extractor.extract()
+        
+        # Elimino i dati del 2019 perchè non hanno incremento
+        data = data[data['anno'] != 2019]
+        # Fase 3: Hyperparameters tuning
+        print("Hyperparameters tuning")
+
+        # leggo il file con i risultati per ottenere le features migliori precedentemente individuate
+        performances = pd.read_csv('best_results/risultati.csv')
+        # ordino le performances in base alla metrica finale e resetto gli indici per poter iterare su di essi
+        performances = performances.sort_values(by='final_metric', ascending=False).reset_index(drop=True)
 
 
+        if os.path.exists('best_results/index.json'):
+            with open('best_results/index.json', 'r') as f:
+                l = json.load(f)
+                index_hp = l['index_hp']
+        else:
+            index_hp = 0 
+
+        # per ogni performance rieseguo il clustering andando a modificare gli iperparametri
+        for ind, performace in performances.iterrows():
+            if ind < index_hp:
+                continue
+            print(f'Iteration {ind}')
+            cluster_assigned = pd.DataFrame()
+            #risultati = []
+            features = ast.literal_eval(performace['features'])
+            data_to_cluster = data[features]
+            n = performace['n_cluster']
+            n_init = range(1, 11)
+            l = ['Huang', 'Cao']
+
+            for d in tqdm(list(itertools.product(n_init, l))):
+                clustering = cl.Clustering(data_to_cluster, n, clustering_model = self.clustering_type, kmodes_init=d[1], kmodes_n_init=d[0])
+                column_name = f'{self.clustering_type}_{n}_clusters_features_at_{ind}_{d[1]}_neighbors_init_{d[0]}'
+                cluster_assigned[column_name] = clustering.execute()
+
+                evaluation = ev.ClusteringEvaluation(data_to_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
+                #data['Silhouette'] = evaluation.calculate_silhouette()
+                #results = evaluation.evaluate()
+                results = evaluation.eval()
+                results['features'] = str(features)
+                results['n_cluster'] = n
+                results['iter_on_best_performances'] = ind
+                results['kmodes_init_type'] = d[1]
+                results['kmodes_n_init'] = d[0]
+                #risultati.append(results)
+                results = pd.DataFrame(results, index=[0])
+                # Salvo i risultati ad ogni iterazione
+                # dalla quinta iterazione in poi il file di salvataggio cambia perchè il file è troppo grande
+                if ind < 5:
+                    dir_results = f'best_results/hp_tuning_results_1.csv'
+                    dir_cluster = f'best_results/hp_tuning_cluster_assigned_1.parquet'
+                else:
+                    dir_results = f'best_results/hp_tuning_results_2.csv'
+                    dir_cluster = f'best_results/hp_tuning_cluster_assigned_2.parquet'
+
+                if os.path.exists(dir_results):
+                    risultati = pd.read_csv(dir_results)
+                    risultati = pd.concat([risultati, results])
+                    risultati.to_csv(dir_results, index=False)
+                else:
+                    pd.DataFrame(results).to_csv(dir_results, index=False)
+                
+                if os.path.exists(dir_cluster):
+                    clusters = pd.read_parquet(dir_cluster)
+                    clusters = pd.concat([clusters, cluster_assigned])
+                    clusters.to_parquet(dir_cluster)
+                else:
+                    cluster_assigned.to_parquet(dir_cluster)
+            # aggiorno il contatore per l'indice
+            index_hp += 1
+            if os.path.exists('best_results/index.json'):
+                with open('best_results/index.json', 'r') as f:
+                    indici = json.load(f)
+                indici['index_hp'] = index_hp
+                with open('best_results/index.json', 'w') as f:
+                    json.dump(indici, f)
+            else:
+                with open('best_results/index.json', 'w') as f:
+                    json.dump({'index_hp': index_hp}, f)

@@ -1,0 +1,161 @@
+purity,contingency_matrix,features,n_cluster,iter_on_best_performances,kmodes_init_type,kmodes_n_init
+0.6380893149612348,"[[13441 24098 17386  5053   929]
+ [12250 82835 56945  1230     0]
+ [60976  1930  3575 15170 41596]
+ [15050 25721 18862  5441  1095]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,1
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,1
+0.6635338951343343,"[[32329 24745   797  2350   686]
+ [86739  2403 64016    89    13]
+ [ 6211 57154     0 58310  1572]
+ [34942 26877   976  2568   806]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,2
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,2
+0.6939786859208639,"[[ 9169 16812   622  1312 32992]
+ [11616 64984  3512 73148     0]
+ [19763 34917 68265   302     0]
+ [40689  2295 19848  3251    86]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,3
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,3
+0.6335053755980802,"[[14129 23637 18937  1494  2710]
+ [12542 76967 63502    53   196]
+ [29808  5081  2963 45719 39676]
+ [15711 25335 20351  1741  3031]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,4
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,4
+0.6005679129200189,"[[26884  5372  1483 27087    81]
+ [78341 10732  3268  1783 59136]
+ [45394 31839 45976    19    19]
+ [33117 10891 20034   829  1298]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,5
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,5
+0.7321170614223097,"[[33509 20076  1401  1872  4049]
+ [ 3237 74294 74237    49  1443]
+ [99387  2956     0  2832 18072]
+ [32005  2165  1348 29480  1171]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,6
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,6
+0.623794857563376,"[[10336 27589  4732  1874 16376]
+ [37303 71719   133     0 44105]
+ [19057  3717 21985 76641  1847]
+ [11232 29578  5126  2044 18189]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,7
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,7
+0.6554389059995094,"[[30980 21138  2458  2670  3661]
+ [ 7789 65609 69869   164  9829]
+ [68238  3359   174 50979   497]
+ [33821 22731  2424  2954  4239]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,8
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,8
+0.6908516959336741,"[[27096 11245 19334  1397  1835]
+ [ 3019 13810  6811 69094 60526]
+ [58967 10043 54187     0    50]
+ [25406 36042  2130   962  1629]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,9
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,9
+0.783313469596093,"[[ 28908   3770  22111   4301   1817]
+ [  6305 119033   2360  25427    135]
+ [  3586   5429  58256   1548  54428]
+ [ 58988    151   2960   4004     66]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Huang,10
+0.7299167705279955,"[[31251 23576  2038  1769  2273]
+ [88815  4936    99 59321    89]
+ [ 6763 60762 55560    72    90]
+ [ 6364 25948  2032  1701 30124]]","['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,5,Cao,10
+0.7623140717027228,"[[ 17761  35402   4273    935   1483   1053]
+ [  6046   1092 120922   2376  20256   2568]
+ [ 37581      0   8093  74544   2193    836]
+ [  7370  51786   4260   1023   1249    481]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,1
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,1
+0.8976517841435343,"[[  4273      0   7147  47841   1199    447]
+ [ 10043      0  24176   4482  91952  22607]
+ [114402      0   1010   4541   2370    924]
+ [     0  61299    558   2534   1316    462]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,2
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,2
+0.7542562496438155,"[[ 45098   4273   1159   1376   7987   1014]
+ [  6982 116598   2799   3350  21070   2461]
+ [106385   7870   2112   2584   2434   1862]
+ [  3051   4427   1231  55092   1394    974]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,3
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,3
+0.7492114385392844,"[[ 40399   9587   2076   7785   1060      0]
+ [137095   5255   5095   3325   2490      0]
+ [     0  24146   1185  16264   2197  79455]
+ [  4513  10433   2302   8607  40314      0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,4
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,4
+0.7608596001318192,"[[37931  8132  4176  2637  8031     0]
+ [ 3481 25814     0  6757 21168 96040]
+ [ 2689 16481 98976  4170   931     0]
+ [58315   799  4260  2314   481     0]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,5
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,5
+0.8166746369396134,"[[  1319    935   8197   8386  38071   3999]
+ [  3406 110814  22117   4595   2822   9506]
+ [104631   1911   2371   4175   2289   7870]
+ [  1414   1061   8962  12668    769  41295]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,6
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,6
+0.8578185899802518,"[[  4273   1483   7514   1287   1671  44679]
+ [139744   3221   5255   2738   1353    949]
+ [  8420  90136  19230   2116   3345      0]
+ [  4513   1530  10103  49067    590    366]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,7
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,7
+0.7932048674002622,"[[ 42086   8076      0      0   1510   9235]
+ [     0  26523  99784      0   3946  23007]
+ [113636   2434      0      0   3002   4175]
+ [     0   8968      0  53228   1659   2314]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,8
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,8
+0.8494782981443718,"[[ 1319 51714  3999  2003  1588   284]
+ [96868  1387  9506 26647  2186 16666]
+ [ 2805  1281  8420 18941 91239   561]
+ [ 1483   727 59701  2215  1752   291]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,9
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,9
+0.7715315065302553,"[[  2823  50605   1152   1168   3999   1160]
+ [117445   2490  17955   2699   9506   3165]
+ [  5372   2316   3821   2956  95410  13372]
+ [ 40432   1183   2043  16590   4363   1558]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Huang,10
+0.8738970670221491,"[[  4273   2682   1989  50801    141   1021]
+ [134023   5823   4051   3795   2769   2799]
+ [  8420 106450   3263   3002      0   2112]
+ [  4513   2903  55848   1659    148   1098]]","['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",6,6,Cao,10
