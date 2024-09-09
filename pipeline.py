@@ -418,13 +418,8 @@ class Pipeline:
                 #risultati.append(results)
                 results = pd.DataFrame(results, index=[0])
                 # Salvo i risultati ad ogni iterazione
-                # dalla quinta iterazione in poi il file di salvataggio cambia perchè il file è troppo grande
-                if ind < 5:
-                    dir_results = f'best_results/hp_tuning_results_1.csv'
-                    dir_cluster = f'best_results/hp_tuning_cluster_assigned_1.parquet'
-                else:
-                    dir_results = f'best_results/hp_tuning_results_2.csv'
-                    dir_cluster = f'best_results/hp_tuning_cluster_assigned_2.parquet'
+                dir_results = f'best_results/hp_tuning_results.csv'
+                dir_cluster = f'best_results/hp_tuning_cluster_assigned.parquet'
 
                 if os.path.exists(dir_results):
                     risultati = pd.read_csv(dir_results)
@@ -471,15 +466,79 @@ class Pipeline:
         
         # devo leggere i risultati del tuning degli iperparametri
         # poi devo ordinarli in base alla purezza e prendere solo quelli la cui purezza e' maggiore di 0.9
+        ris = pd.read_csv('best_results/hp_tuning_results.csv')
+        ris = ris[ris['purity'] >= 0.9]
+        # seleziono tutte le colonne tranne 'kmodes_n_init', perche' e' l'unica che potrebbe creare dei duplicati. In altre parole se si ottiene
+        # la stessa purity indipendentemente dal numero dei vicini, allora non e' un iperparametro interessante. Pertanto lo escludo in fase di filtraggio.
+        df_ = ris.loc[:, ris.columns != 'kmodes_n_init']
+        df_ = df_.drop_duplicates()
+        ris = ris.loc[df_.index]
+        ris.to_csv('best_results/hp_tuning_results_filtered.csv', index=False)
 
         # poi devo leggere le assegnazioni ai cluster dei punti
+        assegnazioni = pd.read_parquet('best_results/hp_tuning_cluster_assigned.parquet')
+        silhouettes = pd.DataFrame()
+        risultati = []
+        if os.path.exists('best_results/index.json'):
+            with open('best_results/index.json', 'r') as f:
+                l = json.load(f)
+                index = l['index_hp_eval']
+        else:
+            index = 0 
 
+        for ind, performace in tqdm(ris.iterrows()):
+            if ind < index:
+                continue
+            features = ast.literal_eval(performace['features'])
+            n_cluster = performace['n_cluster']
+            iter = performace['iter_on_best_performances']
+            kmodes_init = performace['kmodes_init_type']
+            kmodes_n_init = performace['kmodes_n_init']
+            
+            data_to_eval = data[features]
+            cluster_assigned = assegnazioni[[f'{self.clustering_type}_{n_cluster}_clusters_features_at_{iter}_{kmodes_init}_neighbors_init_{kmodes_n_init}']]
         # poi devo calcolare la silhouette per ogni assegnazione
-
+            
+            evaluation = ev.ClusteringEvaluation(data_to_eval, data[['incremento_teleassistenze']], cluster_assigned, self.clustering_type, True, 10)
+            silhouette = evaluation.calculate_silhouette()
+            silhouette.rename(columns={'silhouette': f'silhouette_kmodes_{n_cluster}_clusters_features_at_{iter}_{kmodes_init}_neighbors_init_{kmodes_n_init}'}, inplace=True)
         # poi devo salvare la silhouette 
 
+            if os.path.exists('best_results/silhouettes_hp_tuning_finale.csv'):
+                silhouettes = pd.read_csv('best_results/silhouettes_hp_tuning_finale.csv')
+                silhouettes = pd.concat([silhouettes, silhouette], axis=1)
+                silhouettes.to_csv('best_results/silhouettes_hp_tuning_finale.csv')
+            else:
+                silhouette.to_csv('best_results/silhouettes_hp_tuning_finale.csv')
+            
         # poi calcolo la metrica finale e i vari risultati
+            results = evaluation.evaluate()
+            results['features'] = str(features)
+            results['n_cluster'] = n_cluster
+            results['iter_on_best_performances'] = iter
+            results['kmodes_init_type'] = kmodes_init
+            results['kmodes_n_init'] = kmodes_n_init
+            results = pd.DataFrame(results, index=[0])
+            if os.path.exists('best_results/risultati_hp_tuning_finale.csv'):
+                risultati = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
+                risultati = pd.concat([risultati, results])
+                risultati.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
+            else:
+                pd.DataFrame(results).to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
+            
+            # aggiorno il contatore per l'indice
+            index += 1
+            if os.path.exists('best_results/index.json'):
+                with open('best_results/index.json', 'r') as f:
+                    indici = json.load(f)
+                indici['index_hp_eval'] = index
+                with open('best_results/index.json', 'w') as f:
+                    json.dump(indici, f)
+            else:
+                with open('best_results/index.json', 'w') as f:
+                    json.dump({'index_hp_eval': index}, f)
 
-        # poi salvo i risultati
-
- 
+        # al termine dei cicli ordino i risultati in base alla metrica finale e salvo i risultati
+        risultati_finali = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
+        risultati_finali = risultati_finali.sort_values(by='final_metric', ascending=False)
+        risultati_finali.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)

@@ -1,0 +1,33 @@
+purity,contingency_matrix,silhouette_mean,final_metric,time_silhouette,features,n_cluster,iter_on_best_performances,kmodes_init_type,kmodes_n_init
+0.9145553702707994,"[[  4273   2823  53811      0]
+ [ 10043 139512   3705      0]
+ [115841   4541   2865      0]
+ [  4513      0   1721  59935]]",0.7754618403384765,0.645008605304638,2181.495672941208,"['asl_residenza', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",4,0,Huang,4
+0.9006350614371765,"[[  6325   4693   3841  46048]
+ [152680    227    186    167]
+ [ 12631 110360    145    111]
+ [  6718   5009  54393     49]]",0.7597230185450101,0.6301790399910934,2147.2104666233063,"['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",4,1,Cao,9
+0.9316447917776516,"[[  2439   2121   2564   2478  51305]
+ [  5668 141694   5898      0      0]
+ [118447      0   4800      0      0]
+ [  2619   2507   2391  58652      0]]",0.7420955860791588,0.5868701889284053,2115.405898094177,"['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,9
+0.9006350614371765,"[[  6325   4586   3841  46048    107]
+ [140911    227    186    167  11769]
+ [ 12631 110360    145    111      0]
+ [  6718   5009  54393     49      0]]",0.728437692123346,0.5645363767802613,2134.028570890426,"['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Cao,7
+0.902042454711918,"[[ 58036   2636    217      0     18]
+ [  3825  58103   6086      0  85246]
+ [  2938  14851 105420      0     38]
+ [  1609   7294      0  57244     22]]",0.7124484188601904,0.5572454367860542,2096.980482339859,"['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,5
+0.905459347891264,"[[ 58317   2532      0      0     58]
+ [  5500  52581  94973      0    206]
+ [     0  14939   1204 106962    142]
+ [  5824   7101    649      0  52595]]",0.7018952676467413,0.5536773077690027,2140.0893914699554,"['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Huang,7
+0.9251405534920946,"[[  4193   3323   2264  51122      5]
+ [152338    163    373    380      6]
+ [  8117   6717 106694      0   1719]
+ [  4330  61498    174    166      1]]",0.6774739874802667,0.5513072704861806,2192.393306016922,"['codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'incremento_teleassistenze']",5,4,Huang,5
+0.9240106743842036,"[[  3999   4225   1533  51126     24]
+ [145986    183    125      0   6966]
+ [ 11736 111389      0    122      0]
+ [  6213   2407  57448     64     37]]",0.6127561473760595,0.5183834108801315,2177.3077795505524,"['asl_residenza', 'codice_descrizione_attivita', 'tipologia_professionista_sanitario', 'incremento_teleassistenze']",5,3,Cao,2
