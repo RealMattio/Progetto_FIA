@@ -435,7 +435,7 @@ class Pipeline:
                 
                 if os.path.exists(dir_cluster):
                     clusters = pd.read_parquet(dir_cluster)
-                    clusters = pd.concat([clusters, cluster_assigned])
+                    clusters = pd.concat([clusters, cluster_assigned[column_name]], axis=1)
                     clusters.to_parquet(dir_cluster)
                 else:
                     cluster_assigned.to_parquet(dir_cluster)
@@ -450,3 +450,36 @@ class Pipeline:
             else:
                 with open('best_results/index.json', 'w') as f:
                     json.dump({'index_hp': index_hp}, f)
+
+    def run_hp_tuning_evaluation(self):
+        print("Reading file")
+        data_preprocessing = dp.DataPreprocessing(self.data)
+        
+        # Fase 1: Data Preprocessing
+        print("Data preprocessing")
+        data = data_preprocessing.preprocessing_data()
+        
+        # Fase 2: Feature Extraction
+        print("Feature extraction")
+        feature_extractor = fe.FeatureExtraction(data)
+        data = feature_extractor.extract()
+        
+        # Elimino i dati del 2019 perchè non hanno incremento
+        data = data[data['anno'] != 2019]
+        # Fase 3: evaluation
+        print("Evaluation")
+        
+        # devo leggere i risultati del tuning degli iperparametri
+        # poi devo ordinarli in base alla purezza e prendere solo quelli la cui purezza e' maggiore di 0.9
+
+        # poi devo leggere le assegnazioni ai cluster dei punti
+
+        # poi devo calcolare la silhouette per ogni assegnazione
+
+        # poi devo salvare la silhouette 
+
+        # poi calcolo la metrica finale e i vari risultati
+
+        # poi salvo i risultati
+
+ 
