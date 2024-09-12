@@ -511,9 +511,9 @@ class Pipeline:
             if os.path.exists('best_results/silhouettes_hp_tuning_finale.csv'):
                 silhouettes = pd.read_csv('best_results/silhouettes_hp_tuning_finale.csv')
                 silhouettes = pd.concat([silhouettes, silhouette], axis=1)
-                silhouettes.to_csv('best_results/silhouettes_hp_tuning_finale.csv')
+                silhouettes.to_csv('best_results/silhouettes_hp_tuning_finale.csv', index=False)
             else:
-                silhouette.to_csv('best_results/silhouettes_hp_tuning_finale.csv')
+                silhouette.to_csv('best_results/silhouettes_hp_tuning_finale.csv', index=False)
             
         # poi calcolo la metrica finale e i vari risultati
             results = evaluation.evaluate()
