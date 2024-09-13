@@ -51,11 +51,12 @@ class Pipeline:
         self.clustering_type = clustering_type
         self.n_cluster = n_cluster
 
-    #funzione per legge il dataset
+    #funzione per leggere il dataset viene utilizzata all'interno del costruttore
     def load_data(self) -> pd.DataFrame:
         return pd.read_csv(self.path)
     
-    def run_initial_data(self):
+    # Fase 1: seleziono il sottoinsieme di features migliore provando tutte le combinazioni possibili
+    def fase1_clustering_evaluation_combinazioni_feature(self):
         print(f"Running pipeline from data in {self.path}")
 
         # Fase 0: Lettura del file
@@ -84,13 +85,6 @@ class Pipeline:
         data = data[data['anno'] != 2019]
         # Fase 3: Clustering
         print("Clustering and Evaluation")
-        # Lista che contiene tutte le colonne con cui vorrò fare il clustering
-        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
-        #lista_di_features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
-       #'fascia_eta', 'incremento_teleassistenze']       
-        # Lista di tutte le combinazioni possibili delle features
-        #features = all_combinations(lista_di_features)
-        #features = json.load(open('lista_possibili_features.json'))
         with open('lista_possibili_features.pkl', 'rb') as file:
             features = pickle.load(file)
         #n_cluster = self.n_cluster
@@ -130,17 +124,7 @@ class Pipeline:
             cluster_assigned.to_csv(name_cluster_file)
             iter += 1
 
-                
-        # # Fase 5: Salvataggio dei risultati
-        # print("Saving results")
-        # now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        # name_file = f'test_results/test_results_{self.clustering_type}_{self.n_cluster}_{now}.csv'
-        # pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
-        # name_cluster_file = f'cluster_assigned/cluster_assigned_{self.clustering_type}_{now}.csv'
-        # cluster_assigned.to_csv(name_cluster_file)
-
-    
-    def run_all_features(self):
+    def fase1_clustering_evaluation_tutte_features(self):
         print(f"Running pipeline from data in {self.path}")
 
         # Fase 0: Lettura del file
@@ -217,7 +201,7 @@ class Pipeline:
         # name_cluster_file = f'cluster_assigned/cluster_assigned_{self.clustering_type}_{now}.csv'
         # cluster_assigned.to_csv(name_cluster_file)
 
-    def run(self):
+    def fase1_estrazione_dei_migliori_risultati(self):
         dir = 'all_clustering_results'
         folders = [dir+'/'+name for name in os.listdir(dir) if os.path.isdir(dir+'/'+name) and name.startswith('results_')]
 
@@ -268,8 +252,8 @@ class Pipeline:
         performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance,csv')
         cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned.parquet')
 
-    
-    def run_evaluation(self):
+    # Fase 2: valutazione dei risultati ottenuti, i migliori ci diranno quali sono le features piu' significative
+    def fase2_preliminary_results_evaluation(self):
         # Eseguo nuovamente la fase di lettura e preprocessing del dataset
         print("Reading file")
         data_preprocessing = dp.DataPreprocessing(self.data)
@@ -360,8 +344,9 @@ class Pipeline:
             else:
                 with open('best_results/index.json', 'w') as f:
                     json.dump({'index': index}, f)
-        
-    def run_hp_tuning(self):
+    
+    # Fase 3: Hyperparameters tuning - dopo la scelta delle features, su di esse calcoliamo i migliori iperparametri, usando una ricerca a griglia
+    def fase3_hyperparameter_tuning(self):
         print("Reading file")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
@@ -450,7 +435,8 @@ class Pipeline:
                 with open('best_results/index.json', 'w') as f:
                     json.dump({'index_hp': index_hp}, f)
 
-    def run_hp_tuning_evaluation(self):
+    # Fase 4: Hyperparameters tuning evaluation - si valutano i risultati ottenuti. I migliori forniranno il modello definitivo
+    def fase4_hyperparameter_tuning_evaluation(self):
         print("Reading file")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
@@ -546,3 +532,45 @@ class Pipeline:
         risultati_finali = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
         risultati_finali = risultati_finali.sort_values(by='final_metric', ascending=False)
         risultati_finali.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
+
+    def run(self):
+        if os.path.exists('step.json'):
+            with open('step.json', 'r') as f:
+                l = json.load(f)
+                step = l['step']
+        else:
+            step = 0
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
+        if step == 0:
+            print('\n---Fase 1---\n')
+            self.fase1_clustering_evaluation_combinazioni_feature()
+            self.fase1_clustering_evaluation_tutte_features()
+            self.fase1_estrazione_dei_migliori_risultati()
+            step += 1
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
+        if step == 1:
+            print('\n---Fase 2---\n')
+            self.fase2_preliminary_results_evaluation()
+            step += 1
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
+        if step == 2:
+            print('\n---Fase 3---\n')
+            self.fase3_hyperparameter_tuning()
+            step += 1
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
+        if step == 3:
+            print('\n---Fase 4---\n')
+            self.fase4_hyperparameter_tuning_evaluation()
+            step += 1
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
+        
