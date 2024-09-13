@@ -6,18 +6,12 @@ import clustering as cl
 import evaluation as ev
 import itertools
 from tqdm import tqdm
-import threading
-import time
-import tkinter as tk
-from tkinter import messagebox
 import json
 import os
 import pickle
-import prince
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.decomposition import PCA
 from datetime import datetime
 import ast
+from grafici import grafici
 
 
 # Funzione per ottenere tutte le combinazioni degli elementi di una lista
@@ -35,7 +29,7 @@ def all_combinations(input_list) -> list:
     result.remove(['incremento_teleassistenze'])
     return result
 
-def count_iter_folders(directory = './') -> int:
+def count_iter_folders(directory = './all_clustering_results/') -> int:
     # Lista delle cartelle che iniziano con 'iter'
     iter_folders = [name for name in os.listdir(directory) if os.path.isdir(os.path.join(directory, name)) and name.startswith('results_iter')]
     
@@ -60,15 +54,15 @@ class Pipeline:
         print(f"Running pipeline from data in {self.path}")
 
         # Fase 0: Lettura del file
-        print("Reading file")
+        print("Reading file in fase 1")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
         # Fase 1: Data Preprocessing
-        print("Data preprocessing")
+        print("Data preprocessing in fase 1")
         data = data_preprocessing.preprocessing_data()
         
         # Fase 2: Feature Extraction
-        print("Feature extraction")
+        print("Feature extraction in fase 1")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
         #print(data.columns)
@@ -84,7 +78,7 @@ class Pipeline:
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: Clustering
-        print("Clustering and Evaluation")
+        print("Clustering and Evaluation in fase 1")
         with open('lista_possibili_features.pkl', 'rb') as file:
             features = pickle.load(file)
         #n_cluster = self.n_cluster
@@ -125,18 +119,16 @@ class Pipeline:
             iter += 1
 
     def fase1_clustering_evaluation_tutte_features(self):
-        print(f"Running pipeline from data in {self.path}")
-
         # Fase 0: Lettura del file
-        print("Reading file")
+        print("Reading file in fase 1.1")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
         # Fase 1: Data Preprocessing
-        print("Data preprocessing")
+        print("Data preprocessing in fase 1.1")
         data = data_preprocessing.preprocessing_data()
         
         # Fase 2: Feature Extraction
-        print("Feature extraction")
+        print("Feature extraction in fase 1.1")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
         #print(data.columns)
@@ -152,7 +144,7 @@ class Pipeline:
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: Clustering
-        print("Clustering and Evaluation")
+        print("Clustering and Evaluation in fase 1.1")
         # Lista che contiene tutte le colonne con cui vorrò fare il clustering
         #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
         features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
@@ -160,117 +152,110 @@ class Pipeline:
         # Lista di tutte le combinazioni possibili delle features
         #features = all_combinations(lista_di_features)
         #features = json.load(open('lista_possibili_features.json'))
-        print(f"Starting performing clustering on all features")
+        if not os.path.exists('all_clustering_results/results_all_features'):
+            print(f"Starting performing clustering on all features")
 
-        cluster_assigned = pd.DataFrame()
-        risultati = []
-        df_cluster = data[features]
-        for n in tqdm(range(3, self.n_cluster + 3)):
-            clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
-            column_name = f'{self.clustering_type}_{n}_clusters'
-            cluster_assigned[column_name] = clustering.execute()
-            #pd.concat([data, cluster_assigned], axis=1)
+            cluster_assigned = pd.DataFrame()
+            risultati = []
+            df_cluster = data[features]
+            for n in tqdm(range(3, self.n_cluster + 3)):
+                clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
+                column_name = f'{self.clustering_type}_{n}_clusters'
+                cluster_assigned[column_name] = clustering.execute()
+                #pd.concat([data, cluster_assigned], axis=1)
 
-            # Fase 4: Evaluation
-            #print("Evaluation")
-            evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
-            #data['Silhouette'] = evaluation.calculate_silhouette()
-            #results = evaluation.evaluate()
-            results = evaluation.eval()
-            results['features'] = features
-            results['n_cluster'] = n
-            risultati.append(results)
-        # Salvo i risultati ad ogni iterazione
-        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        directory = f'all_clustering_results/results_all_features'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            print(f"Cartella '{directory}' creata.")
-        name_file = f'{directory}/performance_{self.clustering_type}_all_features_{now}.csv'
-        pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
-        name_cluster_file = f'{directory}/cluster_assigned_{self.clustering_type}_all_features_{now}.csv'
-        cluster_assigned.to_csv(name_cluster_file)
-    
-
-                
-        # # Fase 5: Salvataggio dei risultati
-        # print("Saving results")
-        # now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        # name_file = f'test_results/test_results_{self.clustering_type}_{self.n_cluster}_{now}.csv'
-        # pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
-        # name_cluster_file = f'cluster_assigned/cluster_assigned_{self.clustering_type}_{now}.csv'
-        # cluster_assigned.to_csv(name_cluster_file)
+                # Fase 4: Evaluation
+                #print("Evaluation")
+                evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
+                #data['Silhouette'] = evaluation.calculate_silhouette()
+                #results = evaluation.evaluate()
+                results = evaluation.eval()
+                results['features'] = features
+                results['n_cluster'] = n
+                risultati.append(results)
+            # Salvo i risultati ad ogni iterazione
+            now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            directory = f'all_clustering_results/results_all_features'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"Cartella '{directory}' creata.")
+            name_file = f'{directory}/performance_{self.clustering_type}_all_features_{now}.csv'
+            pd.DataFrame(risultati).sort_values(by='purity', ascending=False).to_csv(name_file)
+            name_cluster_file = f'{directory}/cluster_assigned_{self.clustering_type}_all_features_{now}.csv'
+            cluster_assigned.to_csv(name_cluster_file)
 
     def fase1_estrazione_dei_migliori_risultati(self):
-        dir = 'all_clustering_results'
-        folders = [dir+'/'+name for name in os.listdir(dir) if os.path.isdir(dir+'/'+name) and name.startswith('results_')]
+        if not os.path.exists('best_results/best_performance.csv') and not os.path.exists('best_results/best_cluster_assigned.parquet'):
+            # Fase 1: lettura dei risultati ottenuti
+            dir = 'all_clustering_results'
+            folders = [dir+'/'+name for name in os.listdir(dir) if os.path.isdir(dir+'/'+name) and name.startswith('results_')]
 
-        # se il numero di elementi presenti nella folder è maggiore di 2 allora leggo l'elemento che inizia con 'performance' e leggo le purity
-        cluster_to_save = None
-        performance_to_save = None
-        for folder in tqdm(folders):
-            # Conto il numero di file nella cartella
-            file_in_folder = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-        
-            # Variabile per il nome del file
-            nome_file_performance = None
+            # se il numero di elementi presenti nella folder è maggiore di 2 allora leggo l'elemento che inizia con 'performance' e leggo le purity
+            cluster_to_save = None
+            performance_to_save = None
+            for folder in tqdm(folders):
+                # Conto il numero di file nella cartella
+                file_in_folder = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+            
+                # Variabile per il nome del file
+                nome_file_performance = None
 
-            # Controlla se ci sono più di due file
-            if len(file_in_folder) >= 2:
-                # Cerca un file il cui nome inizia con 'performance'
-                for file in file_in_folder:
-                    if file.startswith('performance'):
-                        # Salva il nome del file
-                        nome_file_performance = file
-                        # Apri e leggi il contenuto del file
-                        with open(os.path.join(folder, file), 'r') as f:
-                            data_performance = pd.read_csv(f)  
+                # Controlla se ci sono più di due file
+                if len(file_in_folder) >= 2:
+                    # Cerca un file il cui nome inizia con 'performance'
+                    for file in file_in_folder:
+                        if file.startswith('performance'):
+                            # Salva il nome del file
+                            nome_file_performance = file
+                            # Apri e leggi il contenuto del file
+                            with open(os.path.join(folder, file), 'r') as f:
+                                data_performance = pd.read_csv(f)  
 
-                    elif file.startswith('cluster_assigned'):
-                        # Apri e leggi il contenuto del file
-                        with open(os.path.join(folder, file), 'r') as f:
-                            data_cluster = pd.read_csv(f)
-                    
-                    # Se entrambi i file sono stati letti, esco dal ciclo
-                    if nome_file_performance and data_cluster is not None:
-                        break
-                # seleziono le righe con putiry maggiore di 0.7
-                data_performance = data_performance[data_performance['purity'] > 0.7]
-                # salvo i valori unici contenuti nella colonna 'n_cluster'
-                n_cluster = data_performance['n_cluster'].unique()
-                # seleziono le colonne di 'data_cluster' che iniziano con 'kmodes'
-                for n in n_cluster:
-                    column_name = f'kmodes_{n}'
-                    cluster_to_save = pd.concat([cluster_to_save, data_cluster.loc[:, data_cluster.columns.str.startswith(column_name)]], axis=1)
-                performance_to_save = pd.concat([performance_to_save, data_performance])
-        
-        # Salvo i risultati
-        directory = 'best_results'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            print(f"Cartella '{directory}' creata.")
-        performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance,csv')
-        cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned.parquet')
+                        elif file.startswith('cluster_assigned'):
+                            # Apri e leggi il contenuto del file
+                            with open(os.path.join(folder, file), 'r') as f:
+                                data_cluster = pd.read_csv(f)
+                        
+                        # Se entrambi i file sono stati letti, esco dal ciclo
+                        if nome_file_performance and data_cluster is not None:
+                            break
+                    # seleziono le righe con putiry maggiore di 0.7
+                    data_performance = data_performance[data_performance['purity'] > 0.7]
+                    # salvo i valori unici contenuti nella colonna 'n_cluster'
+                    n_cluster = data_performance['n_cluster'].unique()
+                    # seleziono le colonne di 'data_cluster' che iniziano con 'kmodes'
+                    for n in n_cluster:
+                        column_name = f'kmodes_{n}'
+                        cluster_to_save = pd.concat([cluster_to_save, data_cluster.loc[:, data_cluster.columns.str.startswith(column_name)]], axis=1)
+                    performance_to_save = pd.concat([performance_to_save, data_performance])
+            
+            # Salvo i risultati
+            directory = 'best_results'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"Cartella '{directory}' creata.")
+            performance_to_save.sort_values(by='purity', ascending=False).to_csv(f'{directory}/best_performance.csv')
+            cluster_to_save.to_parquet(f'{directory}/best_cluster_assigned.parquet')
 
     # Fase 2: valutazione dei risultati ottenuti, i migliori ci diranno quali sono le features piu' significative
     def fase2_preliminary_results_evaluation(self):
         # Eseguo nuovamente la fase di lettura e preprocessing del dataset
-        print("Reading file")
+        print("Reading file in fase 2")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
         # Fase 1: Data Preprocessing
-        print("Data preprocessing")
+        print("Data preprocessing in fase 2")
         data = data_preprocessing.preprocessing_data()
         
         # Fase 2: Feature Extraction
-        print("Feature extraction")
+        print("Feature extraction in fase 2")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
         
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: evaluation
-        print("Evaluation")
+        print("Evaluation in fase 2")
         
         features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
             'fascia_eta', 'incremento_teleassistenze']       
@@ -292,7 +277,7 @@ class Pipeline:
             index = 0 
 
         # itero su tutte le performance filtrate
-        for ind, performace in tqdm(performances.iterrows()):
+        for ind, performace in tqdm(performances.iterrows(), total = performances.shape[0]):
             # se l'indice è minore di quello salvato, salto l'iterazione perche' il calcolo è già stato fatto
             if ind < index:
                 continue
@@ -347,22 +332,22 @@ class Pipeline:
     
     # Fase 3: Hyperparameters tuning - dopo la scelta delle features, su di esse calcoliamo i migliori iperparametri, usando una ricerca a griglia
     def fase3_hyperparameter_tuning(self):
-        print("Reading file")
+        print("Reading file in fase 3")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
         # Fase 1: Data Preprocessing
-        print("Data preprocessing")
+        print("Data preprocessing in fase 3")
         data = data_preprocessing.preprocessing_data()
         
         # Fase 2: Feature Extraction
-        print("Feature extraction")
+        print("Feature extraction in fase 3")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
         
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: Hyperparameters tuning
-        print("Hyperparameters tuning")
+        print("Hyperparameters tuning in fase 3")
 
         # leggo il file con i risultati per ottenere le features migliori precedentemente individuate
         performances = pd.read_csv('best_results/risultati.csv')
@@ -437,22 +422,22 @@ class Pipeline:
 
     # Fase 4: Hyperparameters tuning evaluation - si valutano i risultati ottenuti. I migliori forniranno il modello definitivo
     def fase4_hyperparameter_tuning_evaluation(self):
-        print("Reading file")
+        print("Reading file in fase 4")
         data_preprocessing = dp.DataPreprocessing(self.data)
         
         # Fase 1: Data Preprocessing
-        print("Data preprocessing")
+        print("Data preprocessing in fase 4")
         data = data_preprocessing.preprocessing_data()
         
         # Fase 2: Feature Extraction
-        print("Feature extraction")
+        print("Feature extraction in fase 4")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
         
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: evaluation
-        print("Evaluation")
+        print("Evaluation in fase 4")
         
         # devo leggere i risultati del tuning degli iperparametri
         # poi devo ordinarli in base alla purezza e prendere solo quelli la cui purezza e' maggiore di 0.9
@@ -475,10 +460,13 @@ class Pipeline:
                 index = l['index_hp_eval']
         else:
             index = 0 
-
-        for ind, performace in tqdm(ris.iterrows()):
+        ris.reset_index(drop=True, inplace=True)
+        can_save = False
+        for ind, performace in tqdm(ris.iterrows(), total = ris.shape[0]):
             if ind < index:
                 continue
+            # la variabile can save serve fuori dal for: se non e' mai stata fatta nessuna iterazione allora non c'e' nulla da salvare
+            can_save = True
             features = ast.literal_eval(performace['features'])
             n_cluster = performace['n_cluster']
             iter = performace['iter_on_best_performances']
@@ -529,9 +517,10 @@ class Pipeline:
                     json.dump({'index_hp_eval': index}, f)
 
         # al termine dei cicli ordino i risultati in base alla metrica finale e salvo i risultati
-        risultati_finali = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
-        risultati_finali = risultati_finali.sort_values(by='final_metric', ascending=False)
-        risultati_finali.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
+        if can_save:
+            risultati_finali = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
+            risultati_finali = risultati_finali.sort_values(by='final_metric', ascending=False)
+            risultati_finali.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
 
     def run(self):
         if os.path.exists('step.json'):
@@ -544,7 +533,7 @@ class Pipeline:
             with open('step.json', 'w') as f:
                 json.dump(d, f)
         if step == 0:
-            print('\n---Fase 1---\n')
+            print('\n\n\n---Fase 1---\n\n\n')
             self.fase1_clustering_evaluation_combinazioni_feature()
             self.fase1_clustering_evaluation_tutte_features()
             self.fase1_estrazione_dei_migliori_risultati()
@@ -553,24 +542,30 @@ class Pipeline:
             with open('step.json', 'w') as f:
                 json.dump(d, f)
         if step == 1:
-            print('\n---Fase 2---\n')
+            print('\n\n\n---Fase 2---\n\n\n')
             self.fase2_preliminary_results_evaluation()
             step += 1
             d = {'step': step}
             with open('step.json', 'w') as f:
                 json.dump(d, f)
         if step == 2:
-            print('\n---Fase 3---\n')
+            print('\n\n\n---Fase 3---\n\n\n')
             self.fase3_hyperparameter_tuning()
             step += 1
             d = {'step': step}
             with open('step.json', 'w') as f:
                 json.dump(d, f)
         if step == 3:
-            print('\n---Fase 4---\n')
+            print('\n\n\n---Fase 4---\n\n\n')
             self.fase4_hyperparameter_tuning_evaluation()
             step += 1
             d = {'step': step}
             with open('step.json', 'w') as f:
                 json.dump(d, f)
-        
+        if step == 4:
+            print('\n\n\n---Fase 5---\n\n\n')
+            grafici()
+            step += 1
+            d = {'step': step}
+            with open('step.json', 'w') as f:
+                json.dump(d, f)
