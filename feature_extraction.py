@@ -49,7 +49,7 @@ class FeatureExtraction:
         #self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incrementi_periodici'].abs(), bins=bins, labels=labels)
         self.incrementi['incremento_teleassistenze'] = pd.cut(self.incrementi['incremento'], bins=bins, labels=labels)
         #print(self.incrementi)
-        
+        self.incrementi.to_csv('incrementi.csv', index=False)
         # Assegno la label ad ogni elemento del dataframe principale
         self.assign_label()
         #print(self.df)

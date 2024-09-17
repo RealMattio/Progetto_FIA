@@ -30,6 +30,10 @@ def all_combinations(input_list) -> list:
     return result
 
 def count_iter_folders(directory = './all_clustering_results/') -> int:
+    # Se la cartella non esiste, la creo
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        #print(f"Cartella '{directory}' creata.")
     # Lista delle cartelle che iniziano con 'iter'
     iter_folders = [name for name in os.listdir(directory) if os.path.isdir(os.path.join(directory, name)) and name.startswith('results_iter')]
     
