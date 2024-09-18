@@ -4,7 +4,6 @@ import numpy as np
 import scipy.cluster.hierarchy as sch
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
-from sklearn.datasets import make_blobs
 from sklearn.mixture import GaussianMixture as GM
 from sklearn.cluster import AgglomerativeClustering
 from kmodes.kmodes import KModes
@@ -40,13 +39,6 @@ class Clustering:
     
     def clustering_hierarchical(self) -> pd.DataFrame:
         X = self.data
-        '''
-        n_components = math.ceil(len(X.columns)/4)
-        pca = PCA(n_components = n_components) 
-        X = pca.fit_transform(X)
-        print(f'Original: {X.shape}')
-        print(f'PCA: {df_reduced.shape}')
-        '''
         hc = AgglomerativeClustering(n_clusters = self.n_cluster, metric = 'euclidean', linkage = 'ward')
         y_hc = hc.fit_predict(X)
         self.cluster = pd.DataFrame({'Cluster_HC': y_hc})

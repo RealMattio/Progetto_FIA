@@ -22,10 +22,7 @@ def all_combinations(input_list) -> list:
         # Otteniamo le combinazioni di lunghezza r
         combinations = itertools.combinations(input_list, r)
         result.extend([list(comb) for comb in combinations])
-        '''
-    for e in result:
-        list(e).append('incremento_teleassistenze')
-        '''
+        
     result.remove(['incremento_teleassistenze'])
     return result
 
@@ -33,13 +30,11 @@ def count_iter_folders(directory = './all_clustering_results/') -> int:
     # Se la cartella non esiste, la creo
     if not os.path.exists(directory):
         os.makedirs(directory)
-        #print(f"Cartella '{directory}' creata.")
     # Lista delle cartelle che iniziano con 'iter'
     iter_folders = [name for name in os.listdir(directory) if os.path.isdir(os.path.join(directory, name)) and name.startswith('results_iter')]
     
     return len(iter_folders)
 
-# Description: Classe che si occupa di eseguire tutti i passaggi del pipeline
 class Pipeline:
 
     # Costruttore della classe che si occuperà di eseguire tutti i passaggi del pipeline
@@ -69,23 +64,13 @@ class Pipeline:
         print("Feature extraction in fase 1")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
-        #print(data.columns)
-        '''Index(['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza',
-       'asl_residenza', 'provincia_residenza', 'comune_residenza',
-       'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione',
-       'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione',
-       'tipologia_struttura_erogazione', 'id_professionista_sanitario',
-       'tipologia_professionista_sanitario', 'data_erogazione',
-       'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta', 'eta',
-       'fascia_eta', 'anno', 'quadrimestre', 'incremento_teleassistenze'],
-      dtype='object')'''
+        
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: Clustering
         print("Clustering and Evaluation in fase 1")
         with open('lista_possibili_features.pkl', 'rb') as file:
             features = pickle.load(file)
-        #n_cluster = self.n_cluster
         iter = count_iter_folders()
         features = features[iter:]
         print(f"Starting performing {len(features)} features combinations from iteration {iter}")
@@ -98,13 +83,10 @@ class Pipeline:
                 clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
                 column_name = f'{self.clustering_type}_{n}_clusters_iter{iter}'
                 cluster_assigned[column_name] = clustering.execute()
-                #pd.concat([data, cluster_assigned], axis=1)
 
                 # Fase 4: Evaluation
-                #print("Evaluation")
                 evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
-                #data['Silhouette'] = evaluation.calculate_silhouette()
-                #results = evaluation.evaluate()
+
                 results = evaluation.eval()
                 results['features'] = feature
                 results['n_cluster'] = n
@@ -135,27 +117,15 @@ class Pipeline:
         print("Feature extraction in fase 1.1")
         feature_extractor = fe.FeatureExtraction(data)
         data = feature_extractor.extract()
-        #print(data.columns)
-        '''Index(['id_prenotazione', 'data_nascita', 'sesso', 'regione_residenza',
-       'asl_residenza', 'provincia_residenza', 'comune_residenza',
-       'codice_descrizione_attivita', 'data_contatto', 'regione_erogazione',
-       'asl_erogazione', 'provincia_erogazione', 'struttura_erogazione',
-       'tipologia_struttura_erogazione', 'id_professionista_sanitario',
-       'tipologia_professionista_sanitario', 'data_erogazione',
-       'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_disdetta', 'eta',
-       'fascia_eta', 'anno', 'quadrimestre', 'incremento_teleassistenze'],
-      dtype='object')'''
+        
         # Elimino i dati del 2019 perchè non hanno incremento
         data = data[data['anno'] != 2019]
         # Fase 3: Clustering
         print("Clustering and Evaluation in fase 1.1")
         # Lista che contiene tutte le colonne con cui vorrò fare il clustering
-        #lista_di_features=['asl_residenza', 'codice_descrizione_attivita', 'sesso', 'asl_erogazione', 'fascia_eta']
         features = ['sesso', 'asl_residenza', 'codice_descrizione_attivita', 'asl_erogazione', 'tipologia_struttura_erogazione', 'tipologia_professionista_sanitario',
             'fascia_eta', 'incremento_teleassistenze']       
         # Lista di tutte le combinazioni possibili delle features
-        #features = all_combinations(lista_di_features)
-        #features = json.load(open('lista_possibili_features.json'))
         if not os.path.exists('all_clustering_results/results_all_features'):
             print(f"Starting performing clustering on all features")
 
@@ -166,13 +136,9 @@ class Pipeline:
                 clustering = cl.Clustering(df_cluster, n, clustering_model = self.clustering_type)
                 column_name = f'{self.clustering_type}_{n}_clusters'
                 cluster_assigned[column_name] = clustering.execute()
-                #pd.concat([data, cluster_assigned], axis=1)
 
                 # Fase 4: Evaluation
-                #print("Evaluation")
                 evaluation = ev.ClusteringEvaluation(df_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
-                #data['Silhouette'] = evaluation.calculate_silhouette()
-                #results = evaluation.evaluate()
                 results = evaluation.eval()
                 results['features'] = features
                 results['n_cluster'] = n
@@ -385,15 +351,14 @@ class Pipeline:
                 cluster_assigned[column_name] = clustering.execute()
 
                 evaluation = ev.ClusteringEvaluation(data_to_cluster, data[['incremento_teleassistenze']], cluster_assigned[column_name], self.clustering_type)
-                #data['Silhouette'] = evaluation.calculate_silhouette()
-                #results = evaluation.evaluate()
+                
                 results = evaluation.eval()
                 results['features'] = str(features)
                 results['n_cluster'] = n
                 results['iter_on_best_performances'] = ind
                 results['kmodes_init_type'] = d[1]
                 results['kmodes_n_init'] = d[0]
-                #risultati.append(results)
+
                 results = pd.DataFrame(results, index=[0])
                 # Salvo i risultati ad ogni iterazione
                 dir_results = f'best_results/hp_tuning_results.csv'
@@ -525,7 +490,8 @@ class Pipeline:
             risultati_finali = pd.read_csv('best_results/risultati_hp_tuning_finale.csv')
             risultati_finali = risultati_finali.sort_values(by='final_metric', ascending=False)
             risultati_finali.to_csv('best_results/risultati_hp_tuning_finale.csv', index=False)
-
+    
+    # Funzione per eseguire tutti gli step della pipeline
     def run(self):
         if os.path.exists('step.json'):
             with open('step.json', 'r') as f:
@@ -536,6 +502,7 @@ class Pipeline:
             d = {'step': step}
             with open('step.json', 'w') as f:
                 json.dump(d, f)
+        # con il seguente costrutto if controllo quale fase eseguire se precedentemente era stata interrotta
         if step == 0:
             print('\n\n\n---Fase 1---\n\n\n')
             self.fase1_clustering_evaluation_combinazioni_feature()
